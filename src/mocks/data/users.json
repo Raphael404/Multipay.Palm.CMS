@@ -1,0 +1,74 @@
+[
+  {
+    "id": "U-001",
+    "name": "Rafael Serobian",
+    "email": "admin@multipay.ge",
+    "role": "super_admin",
+    "status": "active",
+    "twoFactorEnabled": true,
+    "lastLoginAt": "2026-06-08T15:00:00.000Z"
+  },
+  {
+    "id": "U-002",
+    "name": "Tamar Kapanadze",
+    "email": "finance@multipay.ge",
+    "role": "finance_admin",
+    "status": "active",
+    "twoFactorEnabled": true,
+    "lastLoginAt": "2026-06-10T11:00:00.000Z"
+  },
+  {
+    "id": "U-003",
+    "name": "Giorgi Beridze",
+    "email": "ops@multipay.ge",
+    "role": "operations_manager",
+    "status": "active",
+    "twoFactorEnabled": true,
+    "lastLoginAt": "2026-06-11T19:00:00.000Z"
+  },
+  {
+    "id": "U-004",
+    "name": "Levan Maisuradze",
+    "email": "tech@multipay.ge",
+    "role": "technical_support",
+    "status": "active",
+    "twoFactorEnabled": true,
+    "lastLoginAt": "2026-06-10T00:00:00.000Z"
+  },
+  {
+    "id": "U-005",
+    "name": "Nino Gelashvili",
+    "email": "support@multipay.ge",
+    "role": "merchant_support",
+    "status": "active",
+    "twoFactorEnabled": true,
+    "lastLoginAt": "2026-06-12T00:00:00.000Z"
+  },
+  {
+    "id": "U-006",
+    "name": "Ana Lomidze",
+    "email": "viewer@multipay.ge",
+    "role": "viewer",
+    "status": "active",
+    "twoFactorEnabled": true,
+    "lastLoginAt": "2026-06-09T03:00:00.000Z"
+  },
+  {
+    "id": "U-007",
+    "name": "Irakli Tsiklauri",
+    "email": "irakli.t@multipay.ge",
+    "role": "operations_manager",
+    "status": "active",
+    "twoFactorEnabled": false,
+    "lastLoginAt": "2026-06-10T17:00:00.000Z"
+  },
+  {
+    "id": "U-008",
+    "name": "Mariam Abashidze",
+    "email": "mariam.a@multipay.ge",
+    "role": "merchant_support",
+    "status": "active",
+    "twoFactorEnabled": false,
+    "lastLoginAt": "2026-06-09T12:00:00.000Z"
+  }
+]

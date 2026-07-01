@@ -1,0 +1,2802 @@
+[
+  {
+    "id": "LOG-00219",
+    "at": "2026-06-12T11:57:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00352",
+    "at": "2026-06-12T11:43:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00185",
+    "at": "2026-06-12T11:27:00.000Z",
+    "level": "debug",
+    "service": "auth-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00019",
+    "at": "2026-06-12T11:26:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00265",
+    "at": "2026-06-12T11:26:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Slow query detected: tx lookup took 2710ms"
+  },
+  {
+    "id": "LOG-00158",
+    "at": "2026-06-12T11:24:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00086",
+    "at": "2026-06-12T11:21:00.000Z",
+    "level": "debug",
+    "service": "settlement-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00166",
+    "at": "2026-06-12T11:14:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00300",
+    "at": "2026-06-12T11:08:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00329",
+    "at": "2026-06-12T11:08:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00357",
+    "at": "2026-06-12T11:01:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00085",
+    "at": "2026-06-12T10:45:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #564 processed: 384 transactions"
+  },
+  {
+    "id": "LOG-00325",
+    "at": "2026-06-12T10:43:00.000Z",
+    "level": "error",
+    "service": "api-core",
+    "message": "Terminal MP-362 connection reset by peer"
+  },
+  {
+    "id": "LOG-00358",
+    "at": "2026-06-12T10:14:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-184 heartbeat received"
+  },
+  {
+    "id": "LOG-00094",
+    "at": "2026-06-12T09:42:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #1693 processed: 110 transactions"
+  },
+  {
+    "id": "LOG-00002",
+    "at": "2026-06-12T09:30:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Terminal MP-273 heartbeat received"
+  },
+  {
+    "id": "LOG-00007",
+    "at": "2026-06-12T09:27:00.000Z",
+    "level": "error",
+    "service": "api-core",
+    "message": "Terminal MP-344 connection reset by peer"
+  },
+  {
+    "id": "LOG-00182",
+    "at": "2026-06-12T09:07:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00163",
+    "at": "2026-06-12T09:03:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Retrying webhook delivery (attempt 2988/5)"
+  },
+  {
+    "id": "LOG-00188",
+    "at": "2026-06-12T08:54:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Slow query detected: tx lookup took 2044ms"
+  },
+  {
+    "id": "LOG-00169",
+    "at": "2026-06-12T08:38:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00139",
+    "at": "2026-06-12T08:37:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #2025 processed: 223 transactions"
+  },
+  {
+    "id": "LOG-00224",
+    "at": "2026-06-12T08:37:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #988 processed: 258 transactions"
+  },
+  {
+    "id": "LOG-00393",
+    "at": "2026-06-12T08:33:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #4869 processed: 117 transactions"
+  },
+  {
+    "id": "LOG-00381",
+    "at": "2026-06-12T07:59:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #7281 processed: 226 transactions"
+  },
+  {
+    "id": "LOG-00110",
+    "at": "2026-06-12T07:45:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #6771 processed: 379 transactions"
+  },
+  {
+    "id": "LOG-00005",
+    "at": "2026-06-12T07:40:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00259",
+    "at": "2026-06-12T07:40:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00258",
+    "at": "2026-06-12T07:21:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00342",
+    "at": "2026-06-12T06:53:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-294 heartbeat received"
+  },
+  {
+    "id": "LOG-00068",
+    "at": "2026-06-12T06:43:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00018",
+    "at": "2026-06-12T06:27:00.000Z",
+    "level": "debug",
+    "service": "auth-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00360",
+    "at": "2026-06-12T06:22:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00101",
+    "at": "2026-06-12T06:21:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00184",
+    "at": "2026-06-12T06:02:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Settlement batch #3985 processed: 259 transactions"
+  },
+  {
+    "id": "LOG-00363",
+    "at": "2026-06-12T05:52:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #3210 processed: 267 transactions"
+  },
+  {
+    "id": "LOG-00277",
+    "at": "2026-06-12T05:49:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-301 heartbeat received"
+  },
+  {
+    "id": "LOG-00102",
+    "at": "2026-06-12T05:31:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00206",
+    "at": "2026-06-12T05:22:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Retrying webhook delivery (attempt 2859/5)"
+  },
+  {
+    "id": "LOG-00111",
+    "at": "2026-06-12T05:15:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Slow query detected: tx lookup took 1571ms"
+  },
+  {
+    "id": "LOG-00330",
+    "at": "2026-06-12T04:46:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-104 heartbeat received"
+  },
+  {
+    "id": "LOG-00017",
+    "at": "2026-06-12T04:32:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-205 heartbeat received"
+  },
+  {
+    "id": "LOG-00132",
+    "at": "2026-06-12T04:20:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #8513 processed: 286 transactions"
+  },
+  {
+    "id": "LOG-00004",
+    "at": "2026-06-12T04:11:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Slow query detected: tx lookup took 3626ms"
+  },
+  {
+    "id": "LOG-00346",
+    "at": "2026-06-12T03:57:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #8194 processed: 343 transactions"
+  },
+  {
+    "id": "LOG-00164",
+    "at": "2026-06-12T03:49:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Terminal MP-279 heartbeat received"
+  },
+  {
+    "id": "LOG-00171",
+    "at": "2026-06-12T03:49:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Slow query detected: tx lookup took 740ms"
+  },
+  {
+    "id": "LOG-00280",
+    "at": "2026-06-12T03:45:00.000Z",
+    "level": "error",
+    "service": "api-core",
+    "message": "Terminal MP-216 connection reset by peer"
+  },
+  {
+    "id": "LOG-00343",
+    "at": "2026-06-12T03:44:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Terminal MP-342 connection reset by peer"
+  },
+  {
+    "id": "LOG-00020",
+    "at": "2026-06-12T03:07:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-166 heartbeat received"
+  },
+  {
+    "id": "LOG-00072",
+    "at": "2026-06-12T02:47:00.000Z",
+    "level": "error",
+    "service": "tx-gateway",
+    "message": "Terminal MP-381 connection reset by peer"
+  },
+  {
+    "id": "LOG-00397",
+    "at": "2026-06-12T02:43:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-327 heartbeat received"
+  },
+  {
+    "id": "LOG-00141",
+    "at": "2026-06-12T02:31:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #4493 processed: 130 transactions"
+  },
+  {
+    "id": "LOG-00353",
+    "at": "2026-06-12T02:18:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Terminal MP-314 heartbeat received"
+  },
+  {
+    "id": "LOG-00156",
+    "at": "2026-06-12T02:05:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00116",
+    "at": "2026-06-12T02:00:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00242",
+    "at": "2026-06-12T01:55:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00048",
+    "at": "2026-06-12T01:52:00.000Z",
+    "level": "warn",
+    "service": "terminal-hub",
+    "message": "Slow query detected: tx lookup took 4992ms"
+  },
+  {
+    "id": "LOG-00239",
+    "at": "2026-06-12T01:23:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-306 heartbeat received"
+  },
+  {
+    "id": "LOG-00230",
+    "at": "2026-06-12T01:08:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #3267 processed: 127 transactions"
+  },
+  {
+    "id": "LOG-00026",
+    "at": "2026-06-12T00:26:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Terminal MP-380 connection reset by peer"
+  },
+  {
+    "id": "LOG-00202",
+    "at": "2026-06-12T00:20:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00125",
+    "at": "2026-06-12T00:11:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00249",
+    "at": "2026-06-11T23:52:00.000Z",
+    "level": "error",
+    "service": "notification-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00216",
+    "at": "2026-06-11T23:51:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00168",
+    "at": "2026-06-11T23:39:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Retrying webhook delivery (attempt 8512/5)"
+  },
+  {
+    "id": "LOG-00308",
+    "at": "2026-06-11T23:16:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #8271 processed: 227 transactions"
+  },
+  {
+    "id": "LOG-00093",
+    "at": "2026-06-11T23:06:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-140 heartbeat received"
+  },
+  {
+    "id": "LOG-00251",
+    "at": "2026-06-11T22:49:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-180 heartbeat received"
+  },
+  {
+    "id": "LOG-00149",
+    "at": "2026-06-11T22:48:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #3760 processed: 51 transactions"
+  },
+  {
+    "id": "LOG-00261",
+    "at": "2026-06-11T22:44:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Slow query detected: tx lookup took 549ms"
+  },
+  {
+    "id": "LOG-00043",
+    "at": "2026-06-11T22:37:00.000Z",
+    "level": "error",
+    "service": "notification-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00254",
+    "at": "2026-06-11T22:36:00.000Z",
+    "level": "warn",
+    "service": "notification-svc",
+    "message": "Retrying webhook delivery (attempt 8946/5)"
+  },
+  {
+    "id": "LOG-00038",
+    "at": "2026-06-11T22:31:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-345 heartbeat received"
+  },
+  {
+    "id": "LOG-00340",
+    "at": "2026-06-11T22:11:00.000Z",
+    "level": "warn",
+    "service": "notification-svc",
+    "message": "Slow query detected: tx lookup took 2858ms"
+  },
+  {
+    "id": "LOG-00200",
+    "at": "2026-06-11T22:08:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00177",
+    "at": "2026-06-11T22:06:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00001",
+    "at": "2026-06-11T21:59:00.000Z",
+    "level": "debug",
+    "service": "auth-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00374",
+    "at": "2026-06-11T21:43:00.000Z",
+    "level": "error",
+    "service": "tx-gateway",
+    "message": "Terminal MP-102 connection reset by peer"
+  },
+  {
+    "id": "LOG-00083",
+    "at": "2026-06-11T21:42:00.000Z",
+    "level": "error",
+    "service": "notification-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00356",
+    "at": "2026-06-11T21:19:00.000Z",
+    "level": "error",
+    "service": "tx-gateway",
+    "message": "Terminal MP-368 connection reset by peer"
+  },
+  {
+    "id": "LOG-00119",
+    "at": "2026-06-11T21:12:00.000Z",
+    "level": "error",
+    "service": "notification-svc",
+    "message": "Terminal MP-221 connection reset by peer"
+  },
+  {
+    "id": "LOG-00095",
+    "at": "2026-06-11T21:04:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Terminal MP-395 connection reset by peer"
+  },
+  {
+    "id": "LOG-00006",
+    "at": "2026-06-11T21:00:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Slow query detected: tx lookup took 2545ms"
+  },
+  {
+    "id": "LOG-00131",
+    "at": "2026-06-11T20:43:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Terminal MP-169 heartbeat received"
+  },
+  {
+    "id": "LOG-00079",
+    "at": "2026-06-11T20:38:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00044",
+    "at": "2026-06-11T20:08:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-338 heartbeat received"
+  },
+  {
+    "id": "LOG-00367",
+    "at": "2026-06-11T20:08:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00271",
+    "at": "2026-06-11T20:07:00.000Z",
+    "level": "error",
+    "service": "api-core",
+    "message": "Terminal MP-147 connection reset by peer"
+  },
+  {
+    "id": "LOG-00297",
+    "at": "2026-06-11T20:02:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Retrying webhook delivery (attempt 5019/5)"
+  },
+  {
+    "id": "LOG-00281",
+    "at": "2026-06-11T19:48:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00162",
+    "at": "2026-06-11T19:44:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00246",
+    "at": "2026-06-11T19:37:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #5909 processed: 203 transactions"
+  },
+  {
+    "id": "LOG-00122",
+    "at": "2026-06-11T19:23:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00195",
+    "at": "2026-06-11T19:22:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00074",
+    "at": "2026-06-11T19:08:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-107 heartbeat received"
+  },
+  {
+    "id": "LOG-00146",
+    "at": "2026-06-11T19:08:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00232",
+    "at": "2026-06-11T18:44:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00260",
+    "at": "2026-06-11T18:38:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00252",
+    "at": "2026-06-11T18:30:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00179",
+    "at": "2026-06-11T18:24:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00344",
+    "at": "2026-06-11T18:17:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00379",
+    "at": "2026-06-11T17:37:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #4267 processed: 276 transactions"
+  },
+  {
+    "id": "LOG-00306",
+    "at": "2026-06-11T17:33:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-313 heartbeat received"
+  },
+  {
+    "id": "LOG-00231",
+    "at": "2026-06-11T16:54:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00371",
+    "at": "2026-06-11T16:42:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #4855 processed: 315 transactions"
+  },
+  {
+    "id": "LOG-00256",
+    "at": "2026-06-11T16:39:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Terminal MP-123 heartbeat received"
+  },
+  {
+    "id": "LOG-00369",
+    "at": "2026-06-11T16:34:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #4160 processed: 169 transactions"
+  },
+  {
+    "id": "LOG-00355",
+    "at": "2026-06-11T16:25:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Terminal MP-113 heartbeat received"
+  },
+  {
+    "id": "LOG-00034",
+    "at": "2026-06-11T16:08:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00341",
+    "at": "2026-06-11T16:05:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00336",
+    "at": "2026-06-11T15:32:00.000Z",
+    "level": "debug",
+    "service": "notification-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00197",
+    "at": "2026-06-11T15:27:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00023",
+    "at": "2026-06-11T15:21:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00105",
+    "at": "2026-06-11T14:50:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Terminal MP-328 heartbeat received"
+  },
+  {
+    "id": "LOG-00395",
+    "at": "2026-06-11T14:50:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #1123 processed: 261 transactions"
+  },
+  {
+    "id": "LOG-00071",
+    "at": "2026-06-11T14:41:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #8918 processed: 64 transactions"
+  },
+  {
+    "id": "LOG-00065",
+    "at": "2026-06-11T14:26:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00263",
+    "at": "2026-06-11T14:16:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Slow query detected: tx lookup took 5539ms"
+  },
+  {
+    "id": "LOG-00180",
+    "at": "2026-06-11T14:08:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-286 heartbeat received"
+  },
+  {
+    "id": "LOG-00024",
+    "at": "2026-06-11T14:03:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Slow query detected: tx lookup took 776ms"
+  },
+  {
+    "id": "LOG-00120",
+    "at": "2026-06-11T13:56:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #262 processed: 272 transactions"
+  },
+  {
+    "id": "LOG-00136",
+    "at": "2026-06-11T13:42:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Retrying webhook delivery (attempt 2545/5)"
+  },
+  {
+    "id": "LOG-00212",
+    "at": "2026-06-11T13:34:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #3245 processed: 236 transactions"
+  },
+  {
+    "id": "LOG-00241",
+    "at": "2026-06-11T13:29:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Settlement batch #8200 processed: 229 transactions"
+  },
+  {
+    "id": "LOG-00175",
+    "at": "2026-06-11T13:17:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #308 processed: 147 transactions"
+  },
+  {
+    "id": "LOG-00204",
+    "at": "2026-06-11T13:17:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #3805 processed: 298 transactions"
+  },
+  {
+    "id": "LOG-00315",
+    "at": "2026-06-11T13:06:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Terminal MP-195 heartbeat received"
+  },
+  {
+    "id": "LOG-00284",
+    "at": "2026-06-11T13:01:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #3274 processed: 176 transactions"
+  },
+  {
+    "id": "LOG-00081",
+    "at": "2026-06-11T12:55:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Retrying webhook delivery (attempt 952/5)"
+  },
+  {
+    "id": "LOG-00335",
+    "at": "2026-06-11T11:38:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00305",
+    "at": "2026-06-11T11:36:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00046",
+    "at": "2026-06-11T11:31:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #5460 processed: 230 transactions"
+  },
+  {
+    "id": "LOG-00015",
+    "at": "2026-06-11T11:15:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Terminal MP-379 heartbeat received"
+  },
+  {
+    "id": "LOG-00137",
+    "at": "2026-06-11T11:14:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00283",
+    "at": "2026-06-11T11:09:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #4535 processed: 249 transactions"
+  },
+  {
+    "id": "LOG-00221",
+    "at": "2026-06-11T10:38:00.000Z",
+    "level": "warn",
+    "service": "terminal-hub",
+    "message": "Slow query detected: tx lookup took 1086ms"
+  },
+  {
+    "id": "LOG-00317",
+    "at": "2026-06-11T10:38:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00279",
+    "at": "2026-06-11T10:32:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00214",
+    "at": "2026-06-11T10:25:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00295",
+    "at": "2026-06-11T10:17:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00290",
+    "at": "2026-06-11T10:11:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #1583 processed: 60 transactions"
+  },
+  {
+    "id": "LOG-00350",
+    "at": "2026-06-11T09:54:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-139 heartbeat received"
+  },
+  {
+    "id": "LOG-00035",
+    "at": "2026-06-11T09:47:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00238",
+    "at": "2026-06-11T09:45:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00385",
+    "at": "2026-06-11T09:31:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00142",
+    "at": "2026-06-11T09:30:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00191",
+    "at": "2026-06-11T09:30:00.000Z",
+    "level": "warn",
+    "service": "auth-svc",
+    "message": "Slow query detected: tx lookup took 4998ms"
+  },
+  {
+    "id": "LOG-00003",
+    "at": "2026-06-11T09:26:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-259 heartbeat received"
+  },
+  {
+    "id": "LOG-00053",
+    "at": "2026-06-11T09:17:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Terminal MP-132 heartbeat received"
+  },
+  {
+    "id": "LOG-00108",
+    "at": "2026-06-11T08:53:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-281 heartbeat received"
+  },
+  {
+    "id": "LOG-00327",
+    "at": "2026-06-11T08:43:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00301",
+    "at": "2026-06-11T08:30:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00273",
+    "at": "2026-06-11T08:19:00.000Z",
+    "level": "warn",
+    "service": "auth-svc",
+    "message": "Retrying webhook delivery (attempt 3391/5)"
+  },
+  {
+    "id": "LOG-00203",
+    "at": "2026-06-11T08:16:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-131 heartbeat received"
+  },
+  {
+    "id": "LOG-00025",
+    "at": "2026-06-11T07:57:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #1715 processed: 183 transactions"
+  },
+  {
+    "id": "LOG-00391",
+    "at": "2026-06-11T07:51:00.000Z",
+    "level": "warn",
+    "service": "auth-svc",
+    "message": "Retrying webhook delivery (attempt 3948/5)"
+  },
+  {
+    "id": "LOG-00226",
+    "at": "2026-06-11T07:26:00.000Z",
+    "level": "debug",
+    "service": "settlement-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00233",
+    "at": "2026-06-11T07:26:00.000Z",
+    "level": "warn",
+    "service": "terminal-hub",
+    "message": "Slow query detected: tx lookup took 103ms"
+  },
+  {
+    "id": "LOG-00032",
+    "at": "2026-06-11T07:25:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00399",
+    "at": "2026-06-11T07:13:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00217",
+    "at": "2026-06-11T07:05:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00266",
+    "at": "2026-06-11T07:02:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-195 heartbeat received"
+  },
+  {
+    "id": "LOG-00354",
+    "at": "2026-06-11T06:58:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00047",
+    "at": "2026-06-11T06:56:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-252 heartbeat received"
+  },
+  {
+    "id": "LOG-00248",
+    "at": "2026-06-11T06:54:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00320",
+    "at": "2026-06-11T06:25:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #247 processed: 303 transactions"
+  },
+  {
+    "id": "LOG-00123",
+    "at": "2026-06-11T06:06:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #3177 processed: 302 transactions"
+  },
+  {
+    "id": "LOG-00114",
+    "at": "2026-06-11T05:59:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00309",
+    "at": "2026-06-11T05:22:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Terminal MP-365 heartbeat received"
+  },
+  {
+    "id": "LOG-00333",
+    "at": "2026-06-11T05:12:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00104",
+    "at": "2026-06-11T05:10:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00235",
+    "at": "2026-06-11T04:54:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #858 processed: 89 transactions"
+  },
+  {
+    "id": "LOG-00292",
+    "at": "2026-06-11T04:46:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-291 heartbeat received"
+  },
+  {
+    "id": "LOG-00227",
+    "at": "2026-06-11T04:43:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Terminal MP-147 heartbeat received"
+  },
+  {
+    "id": "LOG-00359",
+    "at": "2026-06-11T04:41:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00270",
+    "at": "2026-06-11T04:34:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00318",
+    "at": "2026-06-11T04:32:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Settlement batch #7986 processed: 58 transactions"
+  },
+  {
+    "id": "LOG-00143",
+    "at": "2026-06-11T04:30:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Terminal MP-154 heartbeat received"
+  },
+  {
+    "id": "LOG-00394",
+    "at": "2026-06-11T04:26:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Retrying webhook delivery (attempt 5469/5)"
+  },
+  {
+    "id": "LOG-00082",
+    "at": "2026-06-11T03:59:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00208",
+    "at": "2026-06-11T03:59:00.000Z",
+    "level": "warn",
+    "service": "notification-svc",
+    "message": "Retrying webhook delivery (attempt 2533/5)"
+  },
+  {
+    "id": "LOG-00187",
+    "at": "2026-06-11T03:50:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00192",
+    "at": "2026-06-11T03:32:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Terminal MP-397 connection reset by peer"
+  },
+  {
+    "id": "LOG-00107",
+    "at": "2026-06-11T03:18:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #6032 processed: 119 transactions"
+  },
+  {
+    "id": "LOG-00362",
+    "at": "2026-06-11T03:15:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Slow query detected: tx lookup took 1633ms"
+  },
+  {
+    "id": "LOG-00349",
+    "at": "2026-06-11T03:09:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Terminal MP-259 heartbeat received"
+  },
+  {
+    "id": "LOG-00278",
+    "at": "2026-06-11T03:02:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00077",
+    "at": "2026-06-11T02:54:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00384",
+    "at": "2026-06-11T02:46:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00321",
+    "at": "2026-06-11T02:24:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-382 heartbeat received"
+  },
+  {
+    "id": "LOG-00296",
+    "at": "2026-06-11T02:11:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00237",
+    "at": "2026-06-11T01:13:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00087",
+    "at": "2026-06-11T00:58:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Retrying webhook delivery (attempt 3765/5)"
+  },
+  {
+    "id": "LOG-00262",
+    "at": "2026-06-11T00:58:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #2588 processed: 287 transactions"
+  },
+  {
+    "id": "LOG-00150",
+    "at": "2026-06-11T00:29:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-119 heartbeat received"
+  },
+  {
+    "id": "LOG-00096",
+    "at": "2026-06-11T00:16:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00215",
+    "at": "2026-06-11T00:06:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00386",
+    "at": "2026-06-10T23:31:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00311",
+    "at": "2026-06-10T23:25:00.000Z",
+    "level": "warn",
+    "service": "terminal-hub",
+    "message": "Slow query detected: tx lookup took 2994ms"
+  },
+  {
+    "id": "LOG-00392",
+    "at": "2026-06-10T23:17:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-388 heartbeat received"
+  },
+  {
+    "id": "LOG-00076",
+    "at": "2026-06-10T23:11:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00209",
+    "at": "2026-06-10T23:11:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00303",
+    "at": "2026-06-10T23:09:00.000Z",
+    "level": "debug",
+    "service": "notification-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00368",
+    "at": "2026-06-10T22:56:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Slow query detected: tx lookup took 1421ms"
+  },
+  {
+    "id": "LOG-00189",
+    "at": "2026-06-10T22:26:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00289",
+    "at": "2026-06-10T22:26:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00375",
+    "at": "2026-06-10T22:22:00.000Z",
+    "level": "warn",
+    "service": "auth-svc",
+    "message": "Retrying webhook delivery (attempt 884/5)"
+  },
+  {
+    "id": "LOG-00389",
+    "at": "2026-06-10T22:20:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00245",
+    "at": "2026-06-10T22:01:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00013",
+    "at": "2026-06-10T21:26:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #3684 processed: 391 transactions"
+  },
+  {
+    "id": "LOG-00331",
+    "at": "2026-06-10T21:23:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Terminal MP-119 connection reset by peer"
+  },
+  {
+    "id": "LOG-00377",
+    "at": "2026-06-10T21:12:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #4251 processed: 302 transactions"
+  },
+  {
+    "id": "LOG-00388",
+    "at": "2026-06-10T20:48:00.000Z",
+    "level": "error",
+    "service": "settlement-svc",
+    "message": "Terminal MP-342 connection reset by peer"
+  },
+  {
+    "id": "LOG-00062",
+    "at": "2026-06-10T20:46:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Terminal MP-115 heartbeat received"
+  },
+  {
+    "id": "LOG-00064",
+    "at": "2026-06-10T20:44:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00316",
+    "at": "2026-06-10T20:39:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Settlement batch #5337 processed: 122 transactions"
+  },
+  {
+    "id": "LOG-00313",
+    "at": "2026-06-10T20:38:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00328",
+    "at": "2026-06-10T20:37:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Settlement batch #4416 processed: 80 transactions"
+  },
+  {
+    "id": "LOG-00334",
+    "at": "2026-06-10T20:31:00.000Z",
+    "level": "debug",
+    "service": "notification-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00268",
+    "at": "2026-06-10T20:30:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-362 heartbeat received"
+  },
+  {
+    "id": "LOG-00337",
+    "at": "2026-06-10T20:27:00.000Z",
+    "level": "debug",
+    "service": "notification-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00092",
+    "at": "2026-06-10T20:25:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #4784 processed: 192 transactions"
+  },
+  {
+    "id": "LOG-00361",
+    "at": "2026-06-10T20:16:00.000Z",
+    "level": "error",
+    "service": "api-core",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00173",
+    "at": "2026-06-10T20:07:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #783 processed: 109 transactions"
+  },
+  {
+    "id": "LOG-00028",
+    "at": "2026-06-10T20:00:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00378",
+    "at": "2026-06-10T19:51:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00287",
+    "at": "2026-06-10T19:41:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00264",
+    "at": "2026-06-10T19:29:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Retrying webhook delivery (attempt 6404/5)"
+  },
+  {
+    "id": "LOG-00130",
+    "at": "2026-06-10T19:13:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #196 processed: 229 transactions"
+  },
+  {
+    "id": "LOG-00370",
+    "at": "2026-06-10T19:05:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00036",
+    "at": "2026-06-10T19:00:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-339 heartbeat received"
+  },
+  {
+    "id": "LOG-00152",
+    "at": "2026-06-10T18:45:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #3459 processed: 234 transactions"
+  },
+  {
+    "id": "LOG-00170",
+    "at": "2026-06-10T18:32:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Slow query detected: tx lookup took 2104ms"
+  },
+  {
+    "id": "LOG-00016",
+    "at": "2026-06-10T18:29:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00201",
+    "at": "2026-06-10T18:17:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Slow query detected: tx lookup took 2052ms"
+  },
+  {
+    "id": "LOG-00059",
+    "at": "2026-06-10T17:59:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Terminal MP-122 heartbeat received"
+  },
+  {
+    "id": "LOG-00288",
+    "at": "2026-06-10T17:38:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00061",
+    "at": "2026-06-10T17:37:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00127",
+    "at": "2026-06-10T16:50:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00070",
+    "at": "2026-06-10T16:40:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #5480 processed: 57 transactions"
+  },
+  {
+    "id": "LOG-00090",
+    "at": "2026-06-10T16:33:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #846 processed: 144 transactions"
+  },
+  {
+    "id": "LOG-00117",
+    "at": "2026-06-10T16:31:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Terminal MP-237 connection reset by peer"
+  },
+  {
+    "id": "LOG-00196",
+    "at": "2026-06-10T16:25:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #6187 processed: 37 transactions"
+  },
+  {
+    "id": "LOG-00387",
+    "at": "2026-06-10T16:09:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00154",
+    "at": "2026-06-10T15:54:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00380",
+    "at": "2026-06-10T15:33:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #8709 processed: 235 transactions"
+  },
+  {
+    "id": "LOG-00100",
+    "at": "2026-06-10T15:29:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #3313 processed: 20 transactions"
+  },
+  {
+    "id": "LOG-00176",
+    "at": "2026-06-10T15:05:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-356 heartbeat received"
+  },
+  {
+    "id": "LOG-00275",
+    "at": "2026-06-10T14:05:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00194",
+    "at": "2026-06-10T13:46:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #100 processed: 135 transactions"
+  },
+  {
+    "id": "LOG-00236",
+    "at": "2026-06-10T13:45:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-207 heartbeat received"
+  },
+  {
+    "id": "LOG-00057",
+    "at": "2026-06-10T13:33:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-254 heartbeat received"
+  },
+  {
+    "id": "LOG-00243",
+    "at": "2026-06-10T13:33:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00198",
+    "at": "2026-06-10T13:31:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-395 heartbeat received"
+  },
+  {
+    "id": "LOG-00172",
+    "at": "2026-06-10T13:29:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00323",
+    "at": "2026-06-10T13:17:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #723 processed: 201 transactions"
+  },
+  {
+    "id": "LOG-00211",
+    "at": "2026-06-10T13:11:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #6646 processed: 69 transactions"
+  },
+  {
+    "id": "LOG-00103",
+    "at": "2026-06-10T12:58:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Terminal MP-374 connection reset by peer"
+  },
+  {
+    "id": "LOG-00267",
+    "at": "2026-06-10T12:55:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-188 heartbeat received"
+  },
+  {
+    "id": "LOG-00097",
+    "at": "2026-06-10T12:38:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Terminal MP-352 heartbeat received"
+  },
+  {
+    "id": "LOG-00234",
+    "at": "2026-06-10T12:30:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #1087 processed: 293 transactions"
+  },
+  {
+    "id": "LOG-00165",
+    "at": "2026-06-10T12:12:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-379 heartbeat received"
+  },
+  {
+    "id": "LOG-00210",
+    "at": "2026-06-10T12:09:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Terminal MP-169 heartbeat received"
+  },
+  {
+    "id": "LOG-00365",
+    "at": "2026-06-10T11:39:00.000Z",
+    "level": "debug",
+    "service": "auth-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00398",
+    "at": "2026-06-10T11:38:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Retrying webhook delivery (attempt 1275/5)"
+  },
+  {
+    "id": "LOG-00098",
+    "at": "2026-06-10T11:24:00.000Z",
+    "level": "debug",
+    "service": "auth-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00050",
+    "at": "2026-06-10T11:23:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Retrying webhook delivery (attempt 3014/5)"
+  },
+  {
+    "id": "LOG-00021",
+    "at": "2026-06-10T11:05:00.000Z",
+    "level": "warn",
+    "service": "auth-svc",
+    "message": "Slow query detected: tx lookup took 6259ms"
+  },
+  {
+    "id": "LOG-00041",
+    "at": "2026-06-10T11:04:00.000Z",
+    "level": "error",
+    "service": "settlement-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00055",
+    "at": "2026-06-10T11:03:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Terminal MP-363 heartbeat received"
+  },
+  {
+    "id": "LOG-00390",
+    "at": "2026-06-10T11:03:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00250",
+    "at": "2026-06-10T10:43:00.000Z",
+    "level": "debug",
+    "service": "auth-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00332",
+    "at": "2026-06-10T10:42:00.000Z",
+    "level": "error",
+    "service": "tx-gateway",
+    "message": "Terminal MP-373 connection reset by peer"
+  },
+  {
+    "id": "LOG-00294",
+    "at": "2026-06-10T10:36:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #5291 processed: 21 transactions"
+  },
+  {
+    "id": "LOG-00011",
+    "at": "2026-06-10T10:25:00.000Z",
+    "level": "error",
+    "service": "settlement-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00099",
+    "at": "2026-06-10T10:05:00.000Z",
+    "level": "error",
+    "service": "tx-gateway",
+    "message": "Terminal MP-309 connection reset by peer"
+  },
+  {
+    "id": "LOG-00400",
+    "at": "2026-06-10T10:03:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Terminal MP-335 connection reset by peer"
+  },
+  {
+    "id": "LOG-00140",
+    "at": "2026-06-10T09:52:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00285",
+    "at": "2026-06-10T09:28:00.000Z",
+    "level": "debug",
+    "service": "notification-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00157",
+    "at": "2026-06-10T09:02:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00039",
+    "at": "2026-06-10T08:27:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Terminal MP-334 connection reset by peer"
+  },
+  {
+    "id": "LOG-00310",
+    "at": "2026-06-10T08:15:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Terminal MP-264 heartbeat received"
+  },
+  {
+    "id": "LOG-00190",
+    "at": "2026-06-10T07:34:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #4559 processed: 343 transactions"
+  },
+  {
+    "id": "LOG-00066",
+    "at": "2026-06-10T07:28:00.000Z",
+    "level": "error",
+    "service": "notification-svc",
+    "message": "Terminal MP-111 connection reset by peer"
+  },
+  {
+    "id": "LOG-00222",
+    "at": "2026-06-10T07:26:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00145",
+    "at": "2026-06-10T07:16:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Retrying webhook delivery (attempt 6159/5)"
+  },
+  {
+    "id": "LOG-00183",
+    "at": "2026-06-10T07:02:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00161",
+    "at": "2026-06-10T07:01:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-206 heartbeat received"
+  },
+  {
+    "id": "LOG-00274",
+    "at": "2026-06-10T06:49:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-124 heartbeat received"
+  },
+  {
+    "id": "LOG-00223",
+    "at": "2026-06-10T06:41:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #7531 processed: 338 transactions"
+  },
+  {
+    "id": "LOG-00293",
+    "at": "2026-06-10T06:40:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-348 heartbeat received"
+  },
+  {
+    "id": "LOG-00298",
+    "at": "2026-06-10T06:36:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #3823 processed: 396 transactions"
+  },
+  {
+    "id": "LOG-00129",
+    "at": "2026-06-10T06:29:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Slow query detected: tx lookup took 7923ms"
+  },
+  {
+    "id": "LOG-00207",
+    "at": "2026-06-10T06:27:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-342 heartbeat received"
+  },
+  {
+    "id": "LOG-00052",
+    "at": "2026-06-10T06:25:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00319",
+    "at": "2026-06-10T06:00:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00159",
+    "at": "2026-06-10T05:55:00.000Z",
+    "level": "debug",
+    "service": "notification-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00257",
+    "at": "2026-06-10T05:52:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00218",
+    "at": "2026-06-10T05:43:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00205",
+    "at": "2026-06-10T05:16:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-164 heartbeat received"
+  },
+  {
+    "id": "LOG-00144",
+    "at": "2026-06-10T05:08:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00347",
+    "at": "2026-06-10T05:04:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00307",
+    "at": "2026-06-10T04:52:00.000Z",
+    "level": "warn",
+    "service": "auth-svc",
+    "message": "Slow query detected: tx lookup took 2833ms"
+  },
+  {
+    "id": "LOG-00372",
+    "at": "2026-06-10T04:28:00.000Z",
+    "level": "debug",
+    "service": "auth-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00178",
+    "at": "2026-06-10T04:09:00.000Z",
+    "level": "error",
+    "service": "settlement-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00269",
+    "at": "2026-06-10T04:07:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00366",
+    "at": "2026-06-10T03:59:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-298 heartbeat received"
+  },
+  {
+    "id": "LOG-00089",
+    "at": "2026-06-10T03:57:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00383",
+    "at": "2026-06-10T03:54:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00133",
+    "at": "2026-06-10T03:45:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00058",
+    "at": "2026-06-10T03:32:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-197 heartbeat received"
+  },
+  {
+    "id": "LOG-00135",
+    "at": "2026-06-10T03:31:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00073",
+    "at": "2026-06-10T03:17:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-190 heartbeat received"
+  },
+  {
+    "id": "LOG-00134",
+    "at": "2026-06-10T03:09:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00351",
+    "at": "2026-06-10T03:08:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00075",
+    "at": "2026-06-10T03:01:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Terminal MP-300 heartbeat received"
+  },
+  {
+    "id": "LOG-00167",
+    "at": "2026-06-10T02:55:00.000Z",
+    "level": "warn",
+    "service": "notification-svc",
+    "message": "Slow query detected: tx lookup took 2213ms"
+  },
+  {
+    "id": "LOG-00240",
+    "at": "2026-06-10T02:53:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00012",
+    "at": "2026-06-10T02:46:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #3036 processed: 314 transactions"
+  },
+  {
+    "id": "LOG-00326",
+    "at": "2026-06-10T02:34:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #5208 processed: 5 transactions"
+  },
+  {
+    "id": "LOG-00291",
+    "at": "2026-06-10T02:24:00.000Z",
+    "level": "warn",
+    "service": "auth-svc",
+    "message": "Slow query detected: tx lookup took 2603ms"
+  },
+  {
+    "id": "LOG-00128",
+    "at": "2026-06-10T02:21:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Settlement batch #3778 processed: 73 transactions"
+  },
+  {
+    "id": "LOG-00037",
+    "at": "2026-06-10T02:09:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Slow query detected: tx lookup took 3982ms"
+  },
+  {
+    "id": "LOG-00054",
+    "at": "2026-06-10T02:06:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00348",
+    "at": "2026-06-10T01:55:00.000Z",
+    "level": "debug",
+    "service": "notification-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00031",
+    "at": "2026-06-10T01:46:00.000Z",
+    "level": "error",
+    "service": "settlement-svc",
+    "message": "Terminal MP-385 connection reset by peer"
+  },
+  {
+    "id": "LOG-00049",
+    "at": "2026-06-10T00:55:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Settlement batch #8592 processed: 80 transactions"
+  },
+  {
+    "id": "LOG-00124",
+    "at": "2026-06-10T00:24:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Settlement batch #2785 processed: 130 transactions"
+  },
+  {
+    "id": "LOG-00030",
+    "at": "2026-06-10T00:14:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00060",
+    "at": "2026-06-10T00:05:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00160",
+    "at": "2026-06-10T00:05:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Slow query detected: tx lookup took 5749ms"
+  },
+  {
+    "id": "LOG-00225",
+    "at": "2026-06-10T00:01:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00121",
+    "at": "2026-06-09T23:59:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00396",
+    "at": "2026-06-09T23:35:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Slow query detected: tx lookup took 4827ms"
+  },
+  {
+    "id": "LOG-00193",
+    "at": "2026-06-09T23:28:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00080",
+    "at": "2026-06-09T23:13:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Terminal MP-295 connection reset by peer"
+  },
+  {
+    "id": "LOG-00027",
+    "at": "2026-06-09T23:11:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00069",
+    "at": "2026-06-09T22:59:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00148",
+    "at": "2026-06-09T22:53:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00153",
+    "at": "2026-06-09T22:53:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00220",
+    "at": "2026-06-09T22:45:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00022",
+    "at": "2026-06-09T22:31:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Terminal MP-279 heartbeat received"
+  },
+  {
+    "id": "LOG-00042",
+    "at": "2026-06-09T22:25:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (notification-svc)"
+  },
+  {
+    "id": "LOG-00322",
+    "at": "2026-06-09T22:12:00.000Z",
+    "level": "debug",
+    "service": "settlement-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00339",
+    "at": "2026-06-09T22:01:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Terminal MP-353 connection reset by peer"
+  },
+  {
+    "id": "LOG-00286",
+    "at": "2026-06-09T21:45:00.000Z",
+    "level": "debug",
+    "service": "api-core",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00199",
+    "at": "2026-06-09T21:43:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Settlement batch #1808 processed: 42 transactions"
+  },
+  {
+    "id": "LOG-00113",
+    "at": "2026-06-09T21:35:00.000Z",
+    "level": "error",
+    "service": "notification-svc",
+    "message": "Terminal MP-181 connection reset by peer"
+  },
+  {
+    "id": "LOG-00314",
+    "at": "2026-06-09T21:33:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00312",
+    "at": "2026-06-09T21:25:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00299",
+    "at": "2026-06-09T21:22:00.000Z",
+    "level": "error",
+    "service": "tx-gateway",
+    "message": "Terminal MP-308 connection reset by peer"
+  },
+  {
+    "id": "LOG-00115",
+    "at": "2026-06-09T21:15:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Terminal MP-362 heartbeat received"
+  },
+  {
+    "id": "LOG-00181",
+    "at": "2026-06-09T21:07:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00151",
+    "at": "2026-06-09T20:40:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Retrying webhook delivery (attempt 7764/5)"
+  },
+  {
+    "id": "LOG-00045",
+    "at": "2026-06-09T20:35:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Terminal MP-374 heartbeat received"
+  },
+  {
+    "id": "LOG-00067",
+    "at": "2026-06-09T20:31:00.000Z",
+    "level": "debug",
+    "service": "settlement-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00056",
+    "at": "2026-06-09T20:28:00.000Z",
+    "level": "warn",
+    "service": "terminal-hub",
+    "message": "Retrying webhook delivery (attempt 2302/5)"
+  },
+  {
+    "id": "LOG-00302",
+    "at": "2026-06-09T20:26:00.000Z",
+    "level": "warn",
+    "service": "notification-svc",
+    "message": "Slow query detected: tx lookup took 6703ms"
+  },
+  {
+    "id": "LOG-00174",
+    "at": "2026-06-09T20:03:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00373",
+    "at": "2026-06-09T19:59:00.000Z",
+    "level": "debug",
+    "service": "settlement-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00244",
+    "at": "2026-06-09T19:58:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00063",
+    "at": "2026-06-09T19:50:00.000Z",
+    "level": "warn",
+    "service": "settlement-svc",
+    "message": "Retrying webhook delivery (attempt 8431/5)"
+  },
+  {
+    "id": "LOG-00014",
+    "at": "2026-06-09T19:48:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00186",
+    "at": "2026-06-09T19:40:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00255",
+    "at": "2026-06-09T19:33:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Terminal MP-319 heartbeat received"
+  },
+  {
+    "id": "LOG-00009",
+    "at": "2026-06-09T19:12:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00033",
+    "at": "2026-06-09T19:03:00.000Z",
+    "level": "info",
+    "service": "api-core",
+    "message": "Settlement batch #8668 processed: 35 transactions"
+  },
+  {
+    "id": "LOG-00106",
+    "at": "2026-06-09T18:49:00.000Z",
+    "level": "error",
+    "service": "notification-svc",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00138",
+    "at": "2026-06-09T18:42:00.000Z",
+    "level": "debug",
+    "service": "auth-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00282",
+    "at": "2026-06-09T18:42:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Slow query detected: tx lookup took 5255ms"
+  },
+  {
+    "id": "LOG-00088",
+    "at": "2026-06-09T18:41:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00247",
+    "at": "2026-06-09T17:52:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00126",
+    "at": "2026-06-09T17:31:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (settlement-svc)"
+  },
+  {
+    "id": "LOG-00091",
+    "at": "2026-06-09T17:18:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00147",
+    "at": "2026-06-09T16:55:00.000Z",
+    "level": "error",
+    "service": "terminal-hub",
+    "message": "Bank API returned HTTP 503 — circuit breaker opened"
+  },
+  {
+    "id": "LOG-00253",
+    "at": "2026-06-09T16:35:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Terminal MP-366 heartbeat received"
+  },
+  {
+    "id": "LOG-00008",
+    "at": "2026-06-09T16:34:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Terminal MP-249 heartbeat received"
+  },
+  {
+    "id": "LOG-00382",
+    "at": "2026-06-09T15:58:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00213",
+    "at": "2026-06-09T15:42:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Settlement batch #7262 processed: 234 transactions"
+  },
+  {
+    "id": "LOG-00338",
+    "at": "2026-06-09T15:42:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Retrying webhook delivery (attempt 3033/5)"
+  },
+  {
+    "id": "LOG-00155",
+    "at": "2026-06-09T15:35:00.000Z",
+    "level": "warn",
+    "service": "auth-svc",
+    "message": "Slow query detected: tx lookup took 751ms"
+  },
+  {
+    "id": "LOG-00228",
+    "at": "2026-06-09T15:10:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #2596 processed: 313 transactions"
+  },
+  {
+    "id": "LOG-00010",
+    "at": "2026-06-09T15:01:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00078",
+    "at": "2026-06-09T14:42:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Settlement batch #6620 processed: 15 transactions"
+  },
+  {
+    "id": "LOG-00029",
+    "at": "2026-06-09T14:40:00.000Z",
+    "level": "info",
+    "service": "tx-gateway",
+    "message": "Health check OK (api-core)"
+  },
+  {
+    "id": "LOG-00376",
+    "at": "2026-06-09T14:40:00.000Z",
+    "level": "debug",
+    "service": "tx-gateway",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00112",
+    "at": "2026-06-09T14:26:00.000Z",
+    "level": "error",
+    "service": "auth-svc",
+    "message": "Terminal MP-280 connection reset by peer"
+  },
+  {
+    "id": "LOG-00364",
+    "at": "2026-06-09T14:15:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Retrying webhook delivery (attempt 423/5)"
+  },
+  {
+    "id": "LOG-00051",
+    "at": "2026-06-09T14:11:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Health check OK (terminal-hub)"
+  },
+  {
+    "id": "LOG-00276",
+    "at": "2026-06-09T13:48:00.000Z",
+    "level": "info",
+    "service": "settlement-svc",
+    "message": "Health check OK (auth-svc)"
+  },
+  {
+    "id": "LOG-00304",
+    "at": "2026-06-09T13:43:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Settlement batch #4994 processed: 44 transactions"
+  },
+  {
+    "id": "LOG-00229",
+    "at": "2026-06-09T13:41:00.000Z",
+    "level": "debug",
+    "service": "auth-svc",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00109",
+    "at": "2026-06-09T13:08:00.000Z",
+    "level": "warn",
+    "service": "terminal-hub",
+    "message": "Slow query detected: tx lookup took 3658ms"
+  },
+  {
+    "id": "LOG-00040",
+    "at": "2026-06-09T12:57:00.000Z",
+    "level": "warn",
+    "service": "tx-gateway",
+    "message": "Slow query detected: tx lookup took 3954ms"
+  },
+  {
+    "id": "LOG-00324",
+    "at": "2026-06-09T12:53:00.000Z",
+    "level": "debug",
+    "service": "terminal-hub",
+    "message": "Cache refreshed for merchant aggregates"
+  },
+  {
+    "id": "LOG-00345",
+    "at": "2026-06-09T12:53:00.000Z",
+    "level": "info",
+    "service": "terminal-hub",
+    "message": "Terminal MP-357 heartbeat received"
+  },
+  {
+    "id": "LOG-00118",
+    "at": "2026-06-09T12:38:00.000Z",
+    "level": "info",
+    "service": "notification-svc",
+    "message": "Health check OK (tx-gateway)"
+  },
+  {
+    "id": "LOG-00272",
+    "at": "2026-06-09T12:25:00.000Z",
+    "level": "info",
+    "service": "auth-svc",
+    "message": "Settlement batch #3636 processed: 98 transactions"
+  },
+  {
+    "id": "LOG-00084",
+    "at": "2026-06-09T12:13:00.000Z",
+    "level": "warn",
+    "service": "api-core",
+    "message": "Retrying webhook delivery (attempt 3373/5)"
+  }
+]

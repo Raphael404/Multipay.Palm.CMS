@@ -5,102 +5,66 @@ import {
   CreditCard,
   Download,
   Fingerprint,
-  SlidersHorizontal,
   Store,
   TabletSmartphone,
   UsersRound,
 } from 'lucide-react';
 import {
-  useDashboardSummary,
   useHourlyVolume,
-  useStatusRatio,
+  useKpis,
+  useRecentTransactions,
+  useSuccessRatio,
   useTopMerchants,
 } from '@/features/dashboard/api';
-import { useTransactions } from '@/features/transactions/api';
-import { useMerchantNameMap } from '@/features/merchants/api';
-import { useAlertsLatest } from '@/features/alerts/api';
-import { formatGEL, formatNumber, formatPercent, formatTimeAgo } from '@/lib/format';
-import { downloadCsv } from '@/lib/csv';
-import type { SystemAlert, Transaction } from '@/types';
+import { useExportTransactions } from '@/features/transactions/api';
+import { formatGEL, formatNumber, formatPercent } from '@/lib/format';
+import type { RatioItem, RecentTransaction } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { StatCard } from '@/components/shared/StatCard';
-import { StatusText, statusLabel } from '@/components/shared/StatusText';
+import { StatusText } from '@/components/shared/StatusText';
 import { DataTable } from '@/components/shared/DataTable';
+import { SectionCard } from '@/components/shared/SectionCard';
+import { ChartCard } from '@/components/shared/ChartCard';
+import { LoadingButton } from '@/components/shared/LoadingButton';
+import { col } from '@/components/shared/columns';
 import { AreaVolumeChart } from '@/components/charts/AreaVolumeChart';
 import { DonutRatio } from '@/components/charts/DonutRatio';
-import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/_app/')({
   component: DashboardPage,
 });
 
-const ALERT_TILE_CLASSES: Record<SystemAlert['severity'], string> = {
-  critical: 'border-destructive/40 bg-destructive/10',
-  warning: 'border-warning/40 bg-warning/10',
-  info: 'border-info/40 bg-info/10',
-  ok: 'border-success/40 bg-success/10',
-};
+/** Maps the API's ratio labels onto the donut's colour keys. */
+function ratioKey(item: RatioItem): string {
+  const label = (item.label ?? '').toLowerCase();
+  if (label.includes('fail')) return 'failed';
+  if (label.includes('success') || label.includes('complete')) return 'success';
+  if (label.includes('pend')) return 'pending';
+  if (label.includes('refund')) return 'refunded';
+  return label || 'unknown';
+}
 
-const ALERT_TITLE_CLASSES: Record<SystemAlert['severity'], string> = {
-  critical: 'text-destructive',
-  warning: 'text-warning',
-  info: 'text-info',
-  ok: 'text-success',
-};
+const txColumns: ColumnDef<RecentTransaction>[] = [
+  col.date('timestamp', 'Time'),
+  col.text('merchantName', 'Merchant', { strong: true }),
+  col.text('terminalSerialNumber', 'Terminal'),
+  col.money('amount', 'Amount', 'currencyCode'),
+  col.status('status'),
+];
 
 function DashboardPage() {
   const navigate = useNavigate();
-  const summary = useDashboardSummary();
+  const kpis = useKpis();
   const hourly = useHourlyVolume();
-  const ratio = useStatusRatio();
-  const topMerchants = useTopMerchants();
-  const alerts = useAlertsLatest();
-  const recentTx = useTransactions({ page: 1, pageSize: 10 }, { refetchInterval: 15_000 });
-  const merchantNames = useMerchantNameMap();
+  const ratio = useSuccessRatio();
+  const topMerchants = useTopMerchants(5);
+  const recentTx = useRecentTransactions(10);
+  const exportTx = useExportTransactions();
 
-  const s = summary.data;
-
-  const txColumns: ColumnDef<Transaction>[] = [
-    {
-      accessorKey: 'id',
-      header: 'Transaction ID',
-      cell: ({ row }) => <span className="font-medium text-foreground">{row.original.id}</span>,
-    },
-    {
-      accessorKey: 'merchantId',
-      header: 'Merchant',
-      cell: ({ row }) => merchantNames.get(row.original.merchantId) ?? row.original.merchantId,
-    },
-    {
-      accessorKey: 'amount',
-      header: 'Amount',
-      cell: ({ row }) => (
-        <span className="font-semibold text-foreground">{formatGEL(row.original.amount)}</span>
-      ),
-    },
-    {
-      accessorKey: 'method',
-      header: 'Method',
-      cell: ({ row }) => (
-        <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-          {row.original.method === 'palm_authentication' ? (
-            <Fingerprint className="size-4 text-info" />
-          ) : (
-            <CreditCard className="size-4" />
-          )}
-          {row.original.method === 'palm_authentication' ? 'Palm' : 'Card fallback'}
-        </span>
-      ),
-    },
-    {
-      accessorKey: 'status',
-      header: 'Status',
-      cell: ({ row }) => <StatusText status={row.original.status} withDot />,
-    },
-  ];
+  const k = kpis.data;
+  const loading = kpis.isPending;
 
   return (
     <>
@@ -114,67 +78,64 @@ function DashboardPage() {
         <StatCard
           label="Active Palm Terminals"
           icon={<TabletSmartphone className="size-4" />}
-          loading={summary.isPending}
-          value={formatNumber(s?.activeTerminals ?? 0)}
-          delta={`+${s?.terminalsDeltaWeek ?? 0} this week`}
-          deltaTone="positive"
+          loading={loading}
+          value={formatNumber(k?.activeTerminals ?? 0)}
         />
         <StatCard
           label="Today Volume"
           icon={<CreditCard className="size-4" />}
-          loading={summary.isPending}
-          value={formatGEL(s?.todayVolume ?? 0, { compact: true })}
-          delta={`${(s?.todayVolumeDeltaPct ?? 0) >= 0 ? '+' : ''}${formatPercent(s?.todayVolumeDeltaPct ?? 0)} vs yesterday`}
-          deltaTone={(s?.todayVolumeDeltaPct ?? 0) >= 0 ? 'positive' : 'negative'}
+          loading={loading}
+          value={formatGEL(k?.todayVolume ?? 0, { compact: true })}
         />
         <StatCard
           label="Successful Transactions"
           icon={<Fingerprint className="size-4" />}
-          loading={summary.isPending}
-          value={formatPercent(s?.successRate24h ?? 0)}
-          delta="last 24 hours"
+          loading={loading}
+          value={formatPercent(k?.successRate ?? 0)}
         />
         <StatCard
           label="Registered Users"
           icon={<UsersRound className="size-4" />}
-          loading={summary.isPending}
-          value={formatNumber(s?.registeredUsers ?? 0)}
-          delta={`+${s?.registeredUsersToday ?? 0} today`}
-          deltaTone="positive"
+          loading={loading}
+          value={formatNumber(k?.registeredUsers ?? 0)}
         />
       </div>
 
       {/* secondary KPI row */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <SecondaryStat
+        <StatCard
+          size="sm"
           label="Turnover (30d)"
-          loading={summary.isPending}
-          value={formatGEL(s?.totalTurnover30d ?? 0, { compact: true })}
+          loading={loading}
+          value={formatGEL(k?.turnover30d ?? 0, { compact: true })}
         />
-        <SecondaryStat
+        <StatCard
+          size="sm"
           label="Failed operations (30d)"
-          loading={summary.isPending}
-          value={formatNumber(s?.failedCount30d ?? 0)}
-          valueClass="text-destructive"
+          loading={loading}
+          value={<span className="text-destructive">{formatNumber(k?.failedOperations30d ?? 0)}</span>}
         />
-        <SecondaryStat
+        <StatCard
+          size="sm"
           label="Active merchants"
-          loading={summary.isPending}
-          value={formatNumber(s?.activeMerchants ?? 0)}
+          loading={loading}
+          value={formatNumber(k?.activeMerchants ?? 0)}
         />
-        <SecondaryStat
+        <StatCard
+          size="sm"
           label="Avg transaction"
-          loading={summary.isPending}
-          value={formatGEL(s?.avgTransaction30d ?? 0)}
+          loading={loading}
+          value={formatGEL(k?.averageTransaction ?? 0)}
         />
-        <SecondaryStat
+        <StatCard
+          size="sm"
           label="Terminals on/off"
-          loading={summary.isPending}
+          loading={loading}
           value={
             <>
-              <span className="text-success">{s?.onlineOfflineSplit.online ?? 0}</span>
+              <span className="text-success">{k?.terminalsOnline ?? 0}</span>
               <span className="text-muted-foreground"> / </span>
-              <span className="text-destructive">{s?.onlineOfflineSplit.offline ?? 0}</span>
+              <span className="text-destructive">{k?.terminalsOffline ?? 0}</span>
             </>
           }
         />
@@ -182,172 +143,114 @@ function DashboardPage() {
 
       {/* charts */}
       <div className="grid gap-4 xl:grid-cols-5">
-        <Card className="rounded-2xl p-6 xl:col-span-3">
-          <div className="mb-2 flex items-center justify-between">
-            <div>
-              <h2 className="font-semibold text-foreground">Hourly Volume</h2>
-              <p className="text-sm text-muted-foreground">Today, successful transactions</p>
-            </div>
-          </div>
-          {hourly.isPending ? (
-            <Skeleton className="h-[260px] w-full" />
-          ) : (
-            <AreaVolumeChart data={hourly.data ?? []} xKey="hour" />
-          )}
-        </Card>
-        <Card className="rounded-2xl p-6 xl:col-span-2">
-          <h2 className="mb-2 font-semibold text-foreground">Success / Fail Ratio</h2>
-          {ratio.isPending ? (
-            <Skeleton className="h-[260px] w-full" />
-          ) : (
-            <DonutRatio data={ratio.data ?? []} height={220} />
-          )}
-        </Card>
+        <ChartCard
+          title="Hourly Volume"
+          description="Today, by hour"
+          className="xl:col-span-3"
+          loading={hourly.isPending}
+          error={hourly.isError}
+          onRetry={() => void hourly.refetch()}
+          empty={(hourly.data ?? []).length === 0}
+        >
+          <AreaVolumeChart data={hourly.data ?? []} xKey="hour" />
+        </ChartCard>
+        <ChartCard
+          title="Success / Fail Ratio"
+          className="xl:col-span-2"
+          loading={ratio.isPending}
+          error={ratio.isError}
+          onRetry={() => void ratio.refetch()}
+          empty={(ratio.data?.items ?? []).length === 0}
+        >
+          <DonutRatio
+            data={(ratio.data?.items ?? []).map((i) => ({ status: ratioKey(i), count: i.count }))}
+            height={220}
+          />
+        </ChartCard>
       </div>
 
-      {/* merchant activity + security alerts */}
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Card className="rounded-2xl p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-semibold text-foreground">Merchant Activity</h2>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/merchants">
-                View All <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
-          <ul className="space-y-2">
-            {topMerchants.isPending
-              ? Array.from({ length: 5 }).map((_, i) => (
-                  <Skeleton key={i} className="h-[68px] w-full rounded-xl" />
-                ))
-              : (topMerchants.data ?? []).map((m) => (
-                  <li key={m.id}>
-                    <Link
-                      to="/merchants/$merchantId"
-                      params={{ merchantId: m.id }}
-                      className="flex items-center gap-4 rounded-xl bg-card-elevated p-4 transition-colors hover:bg-card-elevated/70"
-                    >
-                      <div className="flex size-10 items-center justify-center rounded-xl bg-card">
-                        <Store className="size-5 text-muted-foreground" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium text-foreground">{m.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {m.activeTerminals} active terminals ·{' '}
-                          <StatusText status={m.status} className="text-sm" />
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-foreground">
-                          {formatGEL(m.todayTurnover, { compact: true })}
-                        </p>
-                        <p className="text-xs text-muted-foreground">today</p>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-          </ul>
-        </Card>
-
-        <Card className="rounded-2xl p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-semibold text-foreground">Security Alerts</h2>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/alerts">
-                View All <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
-          <ul className="space-y-2.5">
-            {alerts.isPending
-              ? Array.from({ length: 4 }).map((_, i) => (
-                  <Skeleton key={i} className="h-[74px] w-full rounded-xl" />
-                ))
-              : (alerts.data ?? []).slice(0, 4).map((alert) => (
-                  <li
-                    key={alert.id}
-                    className={cn('rounded-xl border p-4', ALERT_TILE_CLASSES[alert.severity])}
+      {/* merchant activity */}
+      <SectionCard
+        title="Merchant Activity"
+        actions={
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/merchants">
+              View All <ArrowRight className="size-4" />
+            </Link>
+          </Button>
+        }
+      >
+        <ul className="grid gap-2 lg:grid-cols-2">
+          {topMerchants.isPending
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-[68px] w-full rounded-xl" />
+              ))
+            : (topMerchants.data ?? []).map((m) => (
+                <li key={m.merchantId}>
+                  <Link
+                    to="/merchants/$merchantId"
+                    params={{ merchantId: m.merchantId }}
+                    className="flex items-center gap-4 rounded-xl bg-card-elevated p-4 transition-colors hover:bg-card-elevated/70"
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <p className={cn('font-semibold', ALERT_TITLE_CLASSES[alert.severity])}>
-                        {alert.title}
-                      </p>
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {formatTimeAgo(alert.at)}
-                      </span>
+                    <div className="flex size-10 items-center justify-center rounded-xl bg-card">
+                      <Store className="size-5 text-muted-foreground" />
                     </div>
-                    <p className="mt-0.5 text-sm text-muted-foreground">{alert.description}</p>
-                  </li>
-                ))}
-          </ul>
-        </Card>
-      </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-foreground">
+                        {m.merchantName ?? '—'}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {m.activeTerminals} active terminals ·{' '}
+                        <StatusText status={m.status} className="text-sm" />
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-foreground">
+                        {formatGEL(m.todayRevenue, { compact: true })}
+                      </p>
+                      <p className="text-xs text-muted-foreground">today</p>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+          {!topMerchants.isPending && (topMerchants.data ?? []).length === 0 && (
+            <li className="text-sm text-muted-foreground">No merchant activity yet.</li>
+          )}
+        </ul>
+      </SectionCard>
 
       {/* recent transactions */}
-      <Card className="rounded-2xl p-6">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-semibold text-foreground">Recent Transactions</h2>
-          <div className="flex items-center gap-2">
-            <Button
+      <SectionCard
+        title="Recent Transactions"
+        actions={
+          <>
+            <LoadingButton
               variant="outline"
               size="sm"
-              onClick={() =>
-                downloadCsv(
-                  'recent-transactions',
-                  (recentTx.data?.data ?? []).map((t) => ({
-                    id: t.id,
-                    occurredAt: t.occurredAt,
-                    merchant: merchantNames.get(t.merchantId) ?? t.merchantId,
-                    terminal: t.terminalId,
-                    amount: t.amount,
-                    method: statusLabel(t.method),
-                    status: t.status,
-                  })),
-                )
-              }
+              pending={exportTx.isPending}
+              icon={<Download className="size-4" />}
+              onClick={() => exportTx.mutate({})}
             >
-              <Download className="size-4" /> Export CSV
+              Export CSV
+            </LoadingButton>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/transactions">
+                View All <ArrowRight className="size-4" />
+              </Link>
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => void navigate({ to: '/transactions' })}
-            >
-              <SlidersHorizontal className="size-4" /> Advanced Filters
-            </Button>
-          </div>
-        </div>
+          </>
+        }
+      >
         <DataTable
           columns={txColumns}
-          data={recentTx.data?.data ?? []}
+          data={recentTx.data ?? []}
           loading={recentTx.isPending}
-          onRowClick={() => void navigate({ to: '/transactions' })}
+          error={recentTx.isError}
+          onRetry={() => void recentTx.refetch()}
+          onRowClick={(tx) => void navigate({ to: '/transactions', search: { tx: tx.id } })}
+          emptyState={{ title: 'No transactions yet' }}
         />
-      </Card>
+      </SectionCard>
     </>
-  );
-}
-
-function SecondaryStat({
-  label,
-  value,
-  loading,
-  valueClass,
-}: {
-  label: string;
-  value: React.ReactNode;
-  loading?: boolean;
-  valueClass?: string;
-}) {
-  return (
-    <Card className="gap-1 rounded-2xl p-4">
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      {loading ? (
-        <Skeleton className="h-7 w-20" />
-      ) : (
-        <p className={cn('text-xl font-bold text-foreground', valueClass)}>{value}</p>
-      )}
-    </Card>
   );
 }

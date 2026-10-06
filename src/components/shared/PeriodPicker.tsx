@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { CalendarRange } from 'lucide-react';
-import { subDays, format, startOfDay } from 'date-fns';
+import { endOfDay, format, startOfDay, subDays } from 'date-fns';
 import type { DateRange } from 'react-day-picker';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { SegmentedControl, segmentClass } from '@/components/shared/SegmentedControl';
 
 export type Period = 'today' | '7d' | '30d' | 'custom';
 
@@ -29,7 +29,7 @@ export function usePeriodRange(value: PeriodValue): { from: string; to: string }
   );
 }
 
-export function periodToRange(value: PeriodValue): { from: string; to: string } {
+function periodToRange(value: PeriodValue): { from: string; to: string } {
   const now = new Date();
   switch (value.period) {
     case 'today':
@@ -46,11 +46,11 @@ export function periodToRange(value: PeriodValue): { from: string; to: string } 
   }
 }
 
-const PRESETS: { period: Period; label: string }[] = [
-  { period: 'today', label: 'Today' },
-  { period: '7d', label: '7d' },
-  { period: '30d', label: '30d' },
-];
+const PRESETS = [
+  { value: 'today', label: 'Today' },
+  { value: '7d', label: '7d' },
+  { value: '30d', label: '30d' },
+] as const satisfies readonly { value: Period; label: string }[];
 
 export function PeriodPicker({
   value,
@@ -63,31 +63,14 @@ export function PeriodPicker({
   const [draft, setDraft] = useState<DateRange | undefined>();
 
   return (
-    <div className="flex items-center gap-1 rounded-xl border border-border bg-card p-1">
-      {PRESETS.map((p) => (
-        <Button
-          key={p.period}
-          size="sm"
-          variant="ghost"
-          className={cn(
-            'h-8 rounded-lg px-3',
-            value.period === p.period && 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground',
-          )}
-          onClick={() => onChange({ period: p.period })}
-        >
-          {p.label}
-        </Button>
-      ))}
+    <SegmentedControl<Period>
+      options={PRESETS}
+      value={value.period}
+      onChange={(period) => onChange({ period })}
+    >
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            size="sm"
-            variant="ghost"
-            className={cn(
-              'h-8 rounded-lg px-3',
-              value.period === 'custom' && 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground',
-            )}
-          >
+          <Button size="sm" variant="ghost" className={segmentClass(value.period === 'custom')}>
             <CalendarRange className="size-4" />
             {value.period === 'custom' && value.from && value.to
               ? `${format(new Date(value.from), 'dd MMM')} – ${format(new Date(value.to), 'dd MMM')}`
@@ -105,7 +88,7 @@ export function PeriodPicker({
                 onChange({
                   period: 'custom',
                   from: startOfDay(range.from).toISOString(),
-                  to: new Date(range.to.setHours(23, 59, 59, 999)).toISOString(),
+                  to: endOfDay(range.to).toISOString(),
                 });
                 setOpen(false);
               }
@@ -113,6 +96,6 @@ export function PeriodPicker({
           />
         </PopoverContent>
       </Popover>
-    </div>
+    </SegmentedControl>
   );
 }

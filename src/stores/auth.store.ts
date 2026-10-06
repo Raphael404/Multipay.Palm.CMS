@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AdminUser } from '@/types';
+import type { SessionUser } from '@/types';
+import { TOKEN_KEY } from '@/lib/api-client';
 import { hasPermission, type Permission } from '@/lib/permissions';
 
 interface AuthState {
-  user: AdminUser | null;
+  user: SessionUser | null;
   token: string | null;
   sessionExpired: boolean;
-  setSession: (token: string, user: AdminUser) => void;
+  setSession: (token: string, user: SessionUser) => void;
   clearSession: (opts?: { expired?: boolean }) => void;
   can: (permission: Permission) => boolean;
 }
@@ -19,14 +20,12 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       sessionExpired: false,
       setSession: (token, user) => {
-        // mirrored to plain keys for the api client / mock audit trail
-        localStorage.setItem('palmpay.token', token);
-        localStorage.setItem('palmpay.user', JSON.stringify({ id: user.id, name: user.name }));
+        // mirrored to a plain key for the api client
+        localStorage.setItem(TOKEN_KEY, token);
         set({ token, user, sessionExpired: false });
       },
       clearSession: (opts) => {
-        localStorage.removeItem('palmpay.token');
-        localStorage.removeItem('palmpay.user');
+        localStorage.removeItem(TOKEN_KEY);
         set({ token: null, user: null, sessionExpired: opts?.expired ?? false });
       },
       can: (permission) => hasPermission(get().user?.role, permission),

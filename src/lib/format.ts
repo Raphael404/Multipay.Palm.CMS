@@ -1,4 +1,4 @@
-import { format as formatDateFns, formatDistanceToNowStrict, parseISO } from 'date-fns';
+import { format as formatDateFns, parseISO } from 'date-fns';
 
 const gelFull = new Intl.NumberFormat('ka-GE', {
   style: 'currency',
@@ -47,6 +47,21 @@ export function formatDateTime(iso: string): string {
   return formatDateFns(parseISO(iso), 'dd MMM yyyy, HH:mm');
 }
 
-export function formatTimeAgo(iso: string): string {
-  return formatDistanceToNowStrict(parseISO(iso), { addSuffix: true });
+/** Amount in its own currency; GEL keeps the ₾-leading style used across the app. */
+export function formatMoney(amount: number, currencyCode?: string | null): string {
+  if (!currencyCode || currencyCode === 'GEL' || currencyCode === 'Unknown') {
+    return formatGEL(amount);
+  }
+  try {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(
+      amount,
+    );
+  } catch {
+    return `${amount.toFixed(2)} ${currencyCode}`;
+  }
+}
+
+/** Signed percentage change, e.g. "+4.2%" / "-1.0%". */
+export function formatChange(n: number): string {
+  return `${n >= 0 ? '+' : ''}${formatPercent(n)}`;
 }

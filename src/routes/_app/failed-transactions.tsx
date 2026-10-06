@@ -1,16 +1,24 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, ArrowRight, ShieldAlert } from 'lucide-react';
-import { api } from '@/lib/api-client';
-import type { TxFailureReason } from '@/types';
-import { TxMiniTable } from '@/features/transactions/components/TxMiniTable';
-import { formatNumber, formatPercent } from '@/lib/format';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useState } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
+import type { ColumnDef } from '@tanstack/react-table';
+import { AlertTriangle } from 'lucide-react';
+import type { FailedTransactionItem } from '@/types';
+import {
+  useFailedByReason,
+  useFailedMetrics,
+  useFailedTimeline,
+  useFailedTransactions,
+} from '@/features/failed/api';
+import { DEFAULT_PAGE_SIZE } from '@/lib/api-client';
+import { formatChange, formatDate, formatGEL, formatNumber, formatPercent } from '@/lib/format';
+import { DataTable } from '@/components/shared/DataTable';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { StatCard } from '@/components/shared/StatCard';
 import { statusLabel } from '@/components/shared/StatusText';
+import { SectionCard } from '@/components/shared/SectionCard';
+import { ChartCard } from '@/components/shared/ChartCard';
+import { SegmentedControl } from '@/components/shared/SegmentedControl';
+import { col } from '@/components/shared/columns';
 import { SimpleBarChart } from '@/components/charts/SimpleBarChart';
 import { SimpleLineChart } from '@/components/charts/SimpleLineChart';
 import { CHART_COLORS } from '@/components/charts/chart-theme';
@@ -19,121 +27,139 @@ export const Route = createFileRoute('/_app/failed-transactions')({
   component: FailedTxPage,
 });
 
-interface FailedSummary {
-  failedCount: number;
-  totalCount: number;
-  failRate: number;
-  threshold: number;
-  topReason: { reason: TxFailureReason; count: number };
-}
+const DAY_OPTIONS = [
+  { value: 1, label: '24h' },
+  { value: 7, label: '7d' },
+  { value: 30, label: '30d' },
+] as const;
+
+const columns: ColumnDef<FailedTransactionItem>[] = [
+  {
+    accessorKey: 'paymentId',
+    header: 'Payment ID',
+    cell: ({ row }) => (
+      <span className="font-mono text-xs text-foreground">{row.original.paymentId}</span>
+    ),
+  },
+  col.date('failedAt', 'Failed at'),
+  col.text('merchantName', 'Merchant'),
+  col.text('terminalReferenceId', 'Terminal'),
+  col.money('amount', 'Amount', 'currencyCode'),
+  col.label('category', 'Reason', { tone: 'destructive' }),
+  col.mono('errorCode', 'Error code'),
+];
 
 function FailedTxPage() {
-  const summary = useQuery({
-    queryKey: ['failed', 'summary'],
-    queryFn: () => api.get<FailedSummary>('/failed-transactions/summary'),
-    refetchInterval: 30_000,
-  });
-  const byReason = useQuery({
-    queryKey: ['failed', 'by-reason'],
-    queryFn: () =>
-      api.get<{ reason: string; count: number }[]>('/failed-transactions/by-reason'),
-  });
-  const rateOverTime = useQuery({
-    queryKey: ['failed', 'rate-over-time'],
-    queryFn: () =>
-      api.get<{ date: string; failRate: number }[]>('/failed-transactions/rate-over-time'),
-  });
+  const [days, setDays] = useState<number>(7);
+  const [page, setPage] = useState(1);
 
-  const s = summary.data;
-  const overThreshold = (s?.failRate ?? 0) > (s?.threshold ?? 5);
+  const metrics = useFailedMetrics(days);
+  const byReason = useFailedByReason(days);
+  const timeline = useFailedTimeline(days);
+  const list = useFailedTransactions(days, page);
+
+  const m = metrics.data;
+  const change = m?.comparedToPreviousPeriod ?? 0;
 
   return (
     <>
       <PageHeader
         title="Failed Transactions"
-        description="Monitoring of declined and failed payment operations (last 7 days)"
+        description={`Monitoring of declined and failed payment operations (last ${days} ${days === 1 ? 'day' : 'days'})`}
+        actions={
+          <SegmentedControl
+            options={DAY_OPTIONS}
+            value={days}
+            onChange={(d) => {
+              setDays(d);
+              setPage(1);
+            }}
+          />
+        }
       />
 
-      {overThreshold && (
-        <Card className="flex flex-row items-center gap-4 rounded-2xl border-destructive/40 bg-destructive/10 p-5">
-          <ShieldAlert className="size-6 shrink-0 text-destructive" />
-          <div className="flex-1">
-            <p className="font-semibold text-destructive">Failure rate above threshold</p>
-            <p className="text-sm text-muted-foreground">
-              Current fail rate {formatPercent(s?.failRate ?? 0)} exceeds the {s?.threshold}%
-              alert threshold. A critical alert has been raised.
-            </p>
-          </div>
-          <Button variant="outline" asChild>
-            <Link to="/alerts">
-              Open alerts <ArrowRight className="size-4" />
-            </Link>
-          </Button>
-        </Card>
-      )}
-
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="Failed operations (7d)"
+          label="Failed operations"
           icon={<AlertTriangle className="size-4" />}
-          loading={summary.isPending}
-          value={<span className="text-destructive">{formatNumber(s?.failedCount ?? 0)}</span>}
-          delta={`of ${formatNumber(s?.totalCount ?? 0)} total`}
+          loading={metrics.isPending}
+          value={<span className="text-destructive">{formatNumber(m?.totalFailed ?? 0)}</span>}
+          delta={`${formatChange(change)} vs previous period`}
+          deltaTone={change > 0 ? 'negative' : change < 0 ? 'positive' : 'neutral'}
         />
         <StatCard
-          label="Fail rate"
-          loading={summary.isPending}
-          value={formatPercent(s?.failRate ?? 0, 2)}
-          delta={`alert threshold ${s?.threshold ?? 5}%`}
-          deltaTone={overThreshold ? 'negative' : 'positive'}
+          label="Failure rate"
+          loading={metrics.isPending}
+          value={formatPercent(m?.failureRate ?? 0, 2)}
         />
         <StatCard
-          label="Top failure reason"
-          loading={summary.isPending}
-          value={
-            <span className="text-2xl">{statusLabel(s?.topReason?.reason ?? '—')}</span>
-          }
-          delta={`${s?.topReason?.count ?? 0} occurrences`}
+          label="Most common reason"
+          loading={metrics.isPending}
+          value={<span className="text-2xl">{statusLabel(m?.mostCommonReason)}</span>}
+        />
+        <StatCard
+          label="Affected amount"
+          loading={metrics.isPending}
+          value={formatGEL(m?.totalAffectedAmount ?? 0, { compact: true })}
+          delta={`avg ${formatGEL(m?.averageFailedAmount ?? 0)} per failure`}
         />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card className="rounded-2xl p-6">
-          <h2 className="mb-3 font-semibold text-foreground">Failures by reason</h2>
-          {byReason.isPending ? (
-            <Skeleton className="h-[260px] w-full" />
-          ) : (
-            <SimpleBarChart
-              data={(byReason.data ?? []).map((d) => ({ ...d, reason: statusLabel(d.reason) }))}
-              xKey="reason"
-              yKey="count"
-              color={CHART_COLORS.destructive}
-              layout="vertical"
-            />
-          )}
-        </Card>
-        <Card className="rounded-2xl p-6">
-          <h2 className="mb-3 font-semibold text-foreground">Fail rate over time</h2>
-          {rateOverTime.isPending ? (
-            <Skeleton className="h-[260px] w-full" />
-          ) : (
-            <SimpleLineChart
-              data={rateOverTime.data ?? []}
-              xKey="date"
-              yKey="failRate"
-              color={CHART_COLORS.warning}
-              yFormatter={(v) => `${v}%`}
-              referenceY={s?.threshold ?? 5}
-              referenceLabel="threshold"
-            />
-          )}
-        </Card>
+        <ChartCard
+          title="Failures by reason"
+          loading={byReason.isPending}
+          error={byReason.isError}
+          onRetry={() => void byReason.refetch()}
+          empty={(byReason.data ?? []).length === 0}
+        >
+          <SimpleBarChart
+            data={(byReason.data ?? []).map((d) => ({
+              reason: d.label ?? statusLabel(d.category),
+              count: d.count,
+            }))}
+            xKey="reason"
+            yKey="count"
+            color={CHART_COLORS.destructive}
+            layout="vertical"
+          />
+        </ChartCard>
+        <ChartCard
+          title="Fail rate over time"
+          loading={timeline.isPending}
+          error={timeline.isError}
+          onRetry={() => void timeline.refetch()}
+          empty={(timeline.data ?? []).length === 0}
+        >
+          <SimpleLineChart
+            data={(timeline.data ?? []).map((d) => ({
+              date: formatDate(d.date, 'dd MMM'),
+              failRate: Number(d.failRate.toFixed(2)),
+            }))}
+            xKey="date"
+            yKey="failRate"
+            color={CHART_COLORS.warning}
+            yFormatter={(v) => `${v}%`}
+          />
+        </ChartCard>
       </div>
 
-      <Card className="rounded-2xl p-6">
-        <h2 className="mb-4 font-semibold text-foreground">Failed transactions</h2>
-        <TxMiniTable filters={{ status: ['failed'] }} pageSize={10} />
-      </Card>
+      <SectionCard title="Failed transactions">
+        <DataTable
+          columns={columns}
+          data={list.data?.items ?? []}
+          loading={list.isPending}
+          error={list.isError}
+          onRetry={() => void list.refetch()}
+          pagination={{
+            page,
+            pageSize: DEFAULT_PAGE_SIZE,
+            total: list.data?.totalCount ?? 0,
+            onPageChange: setPage,
+          }}
+          emptyState={{ title: 'No failed transactions', description: 'Nothing failed in this period.' }}
+        />
+      </SectionCard>
     </>
   );
 }

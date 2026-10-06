@@ -1,20 +1,21 @@
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
-import type { Merchant, MerchantDocument, Paginated } from '@/types';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { api, DEFAULT_PAGE_SIZE, type Paginated } from '@/lib/api-client';
+import { useApiMutation } from '@/lib/query';
+import type {
+  MerchantDetail,
+  MerchantListItem,
+  MerchantStatus,
+  MerchantTerminalItem,
+  MerchantTransactionItem,
+  MerchantTurnover,
+  UpdateMerchantInput,
+} from '@/types';
 
 export interface MerchantFilters {
+  search?: string;
+  status?: MerchantStatus;
   page?: number;
   pageSize?: number;
-  search?: string;
-  status?: string[];
-  sort?: string;
-  order?: 'asc' | 'desc';
 }
 
 export const merchantKeys = {
@@ -22,93 +23,82 @@ export const merchantKeys = {
   list: (filters: MerchantFilters) => [...merchantKeys.all, 'list', filters] as const,
   options: () => [...merchantKeys.all, 'options'] as const,
   detail: (id: string) => [...merchantKeys.all, 'detail', id] as const,
-  turnover: (id: string, granularity: string) =>
-    [...merchantKeys.all, 'turnover', id, granularity] as const,
+  terminals: (id: string) => [...merchantKeys.all, 'terminals', id] as const,
+  turnover: (id: string, days: number) => [...merchantKeys.all, 'turnover', id, days] as const,
+  transactions: (id: string, page: number, pageSize: number) =>
+    [...merchantKeys.all, 'transactions', id, page, pageSize] as const,
 };
 
 export function useMerchants(filters: MerchantFilters) {
   return useQuery({
     queryKey: merchantKeys.list(filters),
-    queryFn: () => api.get<Paginated<Merchant>>('/merchants', { ...filters }),
+    queryFn: () =>
+      api.get<{ merchants: Paginated<MerchantListItem> }>('/merchants', { pageSize: DEFAULT_PAGE_SIZE, ...filters }),
+    select: (res) => res.merchants,
     placeholderData: keepPreviousData,
   });
 }
 
-/** Lightweight id→name map for filters, joins and selects. */
+/** Lightweight id→name list for filter selects. */
 export function useMerchantOptions() {
   return useQuery({
     queryKey: merchantKeys.options(),
-    queryFn: () => api.get<Paginated<Merchant>>('/merchants', { page: 1, pageSize: 100 }),
+    queryFn: () =>
+      api.get<{ merchants: Paginated<MerchantListItem> }>('/merchants', {
+        page: 1,
+        pageSize: 200,
+      }),
     select: (res) =>
-      res.data.map((m) => ({ id: m.id, name: m.name, status: m.status })),
-    staleTime: 60_000,
+      res.merchants.items.map((m) => ({
+        id: m.id,
+        name: m.merchantName ?? m.brandName ?? m.id,
+      })),
+    staleTime: 5 * 60_000,
   });
-}
-
-export function useMerchantNameMap() {
-  const { data } = useMerchantOptions();
-  return new Map((data ?? []).map((m) => [m.id, m.name]));
 }
 
 export function useMerchant(id: string) {
   return useQuery({
     queryKey: merchantKeys.detail(id),
-    queryFn: () => api.get<Merchant>(`/merchants/${id}`),
+    queryFn: () => api.get<MerchantDetail>(`/merchants/${id}`),
   });
 }
 
-export function useMerchantTurnover(id: string, granularity: 'daily' | 'weekly' | 'monthly') {
+export function useMerchantTerminals(id: string) {
   return useQuery({
-    queryKey: merchantKeys.turnover(id, granularity),
+    queryKey: merchantKeys.terminals(id),
     queryFn: () =>
-      api.get<{ date: string; volume: number; count: number }[]>(`/merchants/${id}/turnover`, {
-        granularity,
-      }),
+      api.get<{ terminals: MerchantTerminalItem[] }>(`/merchants/${id}/terminals`),
+    select: (res) => res.terminals,
   });
 }
 
-export interface MerchantInput {
-  name: string;
-  legalName: string;
-  taxId: string;
-  status: Merchant['status'];
-  commissionRate: number;
-  contact: Merchant['contact'];
+export function useMerchantTurnover(id: string, days: number) {
+  return useQuery({
+    queryKey: merchantKeys.turnover(id, days),
+    queryFn: () => api.get<MerchantTurnover>(`/merchants/${id}/turnover`, { days }),
+  });
 }
 
-export function useCreateMerchant() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (input: MerchantInput) => api.post<Merchant>('/merchants', input),
-    onSuccess: (merchant) => {
-      void queryClient.invalidateQueries({ queryKey: merchantKeys.all });
-      toast.success(`Merchant "${merchant.name}" created`);
-    },
-    onError: () => toast.error('Failed to create merchant'),
+export function useMerchantTransactions(id: string, page: number, pageSize = DEFAULT_PAGE_SIZE) {
+  return useQuery({
+    queryKey: merchantKeys.transactions(id, page, pageSize),
+    queryFn: () =>
+      api.get<{ transactions: Paginated<MerchantTransactionItem> }>(
+        `/merchants/${id}/transactions`,
+        { page, pageSize },
+      ),
+    select: (res) => res.transactions,
+    placeholderData: keepPreviousData,
   });
 }
 
 export function useUpdateMerchant(id: string) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (input: Partial<MerchantInput>) => api.patch<Merchant>(`/merchants/${id}`, input),
-    onSuccess: (merchant) => {
-      void queryClient.invalidateQueries({ queryKey: merchantKeys.all });
-      toast.success(`Merchant "${merchant.name}" updated`);
-    },
-    onError: () => toast.error('Failed to update merchant'),
-  });
-}
-
-export function useUploadDocument(merchantId: string) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (input: { name: string; type: string }) =>
-      api.post<MerchantDocument>(`/merchants/${merchantId}/documents`, input),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: merchantKeys.detail(merchantId) });
-      toast.success('Document uploaded');
-    },
-    onError: () => toast.error('Upload failed'),
+  return useApiMutation({
+    mutationFn: (input: UpdateMerchantInput) =>
+      api.put<{ id: string; updatedAt: string }>(`/merchants/${id}`, { ...input, id }),
+    invalidate: [merchantKeys.all],
+    success: 'Merchant updated',
+    error: 'Failed to update merchant',
   });
 }

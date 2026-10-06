@@ -18,7 +18,7 @@ export function SimpleBarChart({
   yFormatter,
   layout = 'horizontal',
 }: {
-  data: Record<string, unknown>[];
+  data: object[];
   xKey: string;
   yKey: string;
   color?: string;

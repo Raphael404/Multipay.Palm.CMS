@@ -1,38 +1,49 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { onUnauthorized } from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth.store';
-import { useUiStore } from '@/stores/ui.store';
 
+const IDLE_TIMEOUT_MS = 15 * 60_000;
 const ACTIVITY_EVENTS = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'] as const;
 
-/** Auto-logout after N minutes of inactivity (default 15, configurable in Settings). */
-export function useIdleLogout(): void {
+/**
+ * Ends the session — and returns to login — after 15 minutes of inactivity
+ * or when any API request comes back 401 (expired / invalid token).
+ */
+export function useSessionGuard(): void {
   const navigate = useNavigate();
-  const timeoutMinutes = useUiStore((s) => s.sessionTimeoutMinutes);
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const queryClient = useQueryClient();
+
+  const expire = useCallback(
+    (description: string) => {
+      const { token, clearSession } = useAuthStore.getState();
+      if (!token) return;
+      clearSession({ expired: true });
+      queryClient.clear();
+      toast.warning('Session expired', { description });
+      void navigate({ to: '/login' });
+    },
+    [navigate, queryClient],
+  );
+
+  useEffect(() => onUnauthorized(() => expire('Please sign in again.')), [expire]);
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     const reset = () => {
-      clearTimeout(timer.current);
-      timer.current = setTimeout(
-        () => {
-          const { token, clearSession } = useAuthStore.getState();
-          if (!token) return;
-          clearSession({ expired: true });
-          toast.warning('Session expired', {
-            description: 'You were logged out after a period of inactivity.',
-          });
-          void navigate({ to: '/login' });
-        },
-        timeoutMinutes * 60_000,
+      clearTimeout(timer);
+      timer = setTimeout(
+        () => expire('You were logged out after a period of inactivity.'),
+        IDLE_TIMEOUT_MS,
       );
     };
     reset();
     for (const ev of ACTIVITY_EVENTS) window.addEventListener(ev, reset, { passive: true });
     return () => {
-      clearTimeout(timer.current);
+      clearTimeout(timer);
       for (const ev of ACTIVITY_EVENTS) window.removeEventListener(ev, reset);
     };
-  }, [navigate, timeoutMinutes]);
+  }, [expire]);
 }

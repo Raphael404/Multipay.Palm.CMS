@@ -1,244 +1,377 @@
 import { useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
+import type { ColumnDef } from '@tanstack/react-table';
+import { Link2, Pause, Play, Power, Unlink } from 'lucide-react';
+import type { DeviceAssignment, DeviceStatus, Terminal } from '@/types';
 import {
-  ArrowLeft,
-  Cpu,
-  Link2,
-  MapPin,
-  RefreshCcw,
-  Unplug,
-  Wifi,
-  Wrench,
-} from 'lucide-react';
-import { useTerminal, useUpdateTerminal } from '@/features/terminals/api';
-import { useMerchantOptions } from '@/features/merchants/api';
-import { TxMiniTable } from '@/features/transactions/components/TxMiniTable';
-import { formatDate, formatDateTime, formatTimeAgo } from '@/lib/format';
+  useActivateTerminal,
+  useAssignDevice,
+  useAvailableDevices,
+  useResumeTerminal,
+  useSuspendTerminal,
+  useTerminal,
+  useUnassignDevice,
+} from '@/features/terminals/api';
+import { formatDate, formatDateTime } from '@/lib/format';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { PageHeader } from '@/components/shared/PageHeader';
+import { Textarea } from '@/components/ui/textarea';
+import { DetailHeader } from '@/components/shared/DetailHeader';
+import { DetailList, DetailRow } from '@/components/shared/DetailList';
+import { SectionCard } from '@/components/shared/SectionCard';
 import { StatusText, statusLabel } from '@/components/shared/StatusText';
+import { DataTable } from '@/components/shared/DataTable';
 import { Can } from '@/components/shared/Can';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { ErrorState } from '@/components/shared/ErrorState';
-import { cn } from '@/lib/utils';
+import { FormField } from '@/components/shared/FormField';
+import { OptionSelect, enumOptions } from '@/components/shared/OptionSelect';
+import { col } from '@/components/shared/columns';
 
 export const Route = createFileRoute('/_app/terminals/$terminalId')({
   component: TerminalDetailPage,
 });
 
-const EVENT_ICONS: Record<string, typeof Wifi> = {
-  installed: Cpu,
-  status_change: RefreshCcw,
-  disconnect: Unplug,
-  reconnect: Wifi,
-  firmware_update: Cpu,
-  maintenance: Wrench,
-  assignment: Link2,
-};
+const ACTIVATABLE = new Set(['Registered', 'Provisioned', 'Inactive']);
+
+type DialogKind = 'activate' | 'suspend' | 'resume' | 'assign' | 'unassign' | null;
+
+interface DialogProps {
+  open: boolean;
+  onClose: () => void;
+  terminal: Terminal;
+}
 
 function TerminalDetailPage() {
   const { terminalId } = Route.useParams();
   const query = useTerminal(terminalId);
-  const merchants = useMerchantOptions();
-  const update = useUpdateTerminal(terminalId);
-  const [assignTarget, setAssignTarget] = useState<string | null>(null);
+  const [dialog, setDialog] = useState<DialogKind>(null);
 
   if (query.isError) {
     return <ErrorState message="Terminal not found." onRetry={() => void query.refetch()} />;
   }
 
-  const t = query.data;
-  const merchant = merchants.data?.find((m) => m.id === t?.merchantId);
+  const t = query.data?.terminal;
+  const close = () => setDialog(null);
 
   return (
     <>
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" asChild>
-          <Link to="/terminals">
-            <ArrowLeft className="size-5" />
-          </Link>
-        </Button>
-        {t ? (
-          <PageHeader
-            title={t.id}
-            description={`Serial ${t.serialNumber} · firmware ${t.firmwareVersion}`}
-            actions={<StatusText status={t.status} withDot className="text-base" />}
-          />
-        ) : (
-          <Skeleton className="h-10 w-72" />
-        )}
-      </div>
-
-      <div className="grid gap-4 xl:grid-cols-3">
-        <Card className="gap-4 rounded-2xl p-6">
-          <h3 className="font-semibold text-foreground">Terminal info</h3>
-          {t ? (
-            <dl className="space-y-3 text-sm">
-              <div className="flex items-center justify-between">
-                <dt className="text-muted-foreground">Merchant</dt>
-                <dd className="font-medium text-foreground">
-                  {merchant ? (
-                    <Link
-                      to="/merchants/$merchantId"
-                      params={{ merchantId: merchant.id }}
-                      className="text-info hover:underline"
-                    >
-                      {merchant.name}
-                    </Link>
-                  ) : (
-                    'Unassigned'
-                  )}
-                </dd>
-              </div>
-              <div className="flex items-center justify-between">
-                <dt className="text-muted-foreground">Location</dt>
-                <dd className="flex items-center gap-1.5 font-medium text-foreground">
-                  <MapPin className="size-3.5 text-muted-foreground" />
-                  <span className="max-w-48 truncate">{t.locationAddress}</span>
-                </dd>
-              </div>
-              <div className="flex items-center justify-between">
-                <dt className="text-muted-foreground">Installed</dt>
-                <dd className="font-medium text-foreground">{formatDate(t.installedAt)}</dd>
-              </div>
-              <div className="flex items-center justify-between">
-                <dt className="text-muted-foreground">Last seen</dt>
-                <dd className="font-medium text-foreground">{formatTimeAgo(t.lastSeenAt)}</dd>
-              </div>
-            </dl>
-          ) : (
-            <Skeleton className="h-40 w-full" />
-          )}
-
-          <Can permission="terminals.write">
-            <div className="space-y-1.5 border-t border-border pt-4">
-              <p className="text-sm text-muted-foreground">Assign to merchant</p>
-              <Select
-                value={t?.merchantId ?? 'none'}
-                onValueChange={(v) => setAssignTarget(v)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Unassigned</SelectItem>
-                  {(merchants.data ?? [])
-                    .filter((m) => m.status === 'active')
-                    .map((m) => (
-                      <SelectItem key={m.id} value={m.id}>
-                        {m.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </Can>
-        </Card>
-
-        <Card className="gap-4 rounded-2xl p-6">
-          <h3 className="font-semibold text-foreground">Uptime (30 days)</h3>
-          {t ? (
+      <DetailHeader
+        backTo="/terminals"
+        loading={!t}
+        title={t?.referenceId ?? 'Terminal'}
+        description={t && `${statusLabel(t.terminalType)} · registered ${formatDate(t.registeredAt)}`}
+        actions={
+          t && (
             <>
-              <p
-                className={cn(
-                  'text-4xl font-bold',
-                  t.uptimePercent30d >= 99
-                    ? 'text-success'
-                    : t.uptimePercent30d >= 95
-                      ? 'text-warning'
-                      : 'text-destructive',
+              <StatusText status={t.status} withDot className="mr-2 text-base" />
+              <Can permission="terminals.write">
+                {ACTIVATABLE.has(t.status) && (
+                  <Button variant="outline" onClick={() => setDialog('activate')}>
+                    <Power className="size-4" /> Activate
+                  </Button>
                 )}
-              >
-                {t.uptimePercent30d.toFixed(2)}%
-              </p>
-              <div className="h-2 overflow-hidden rounded-full bg-card-elevated">
-                <div
-                  className={cn(
-                    'h-full rounded-full',
-                    t.uptimePercent30d >= 99
-                      ? 'bg-success'
-                      : t.uptimePercent30d >= 95
-                        ? 'bg-warning'
-                        : 'bg-destructive',
-                  )}
-                  style={{ width: `${t.uptimePercent30d}%` }}
-                />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {t.status === 'online'
-                  ? 'Terminal is currently connected and processing payments.'
-                  : `Terminal is ${statusLabel(t.status).toLowerCase()}.`}
-              </p>
+                {t.status === 'Active' && (
+                  <Button variant="outline" onClick={() => setDialog('suspend')}>
+                    <Pause className="size-4" /> Suspend
+                  </Button>
+                )}
+                {t.status === 'Suspended' && (
+                  <Button variant="outline" onClick={() => setDialog('resume')}>
+                    <Play className="size-4" /> Resume
+                  </Button>
+                )}
+              </Can>
             </>
-          ) : (
-            <Skeleton className="h-28 w-full" />
-          )}
-        </Card>
-
-        <Card className="gap-4 rounded-2xl p-6 xl:row-span-2">
-          <h3 className="font-semibold text-foreground">Activity history</h3>
-          {t ? (
-            <ol className="max-h-[560px] space-y-0 overflow-y-auto pr-2">
-              {[...t.activityLog].reverse().map((event, i, arr) => {
-                const Icon = EVENT_ICONS[event.event] ?? RefreshCcw;
-                return (
-                  <li key={i} className="relative flex gap-3 pb-5 last:pb-0">
-                    <div className="flex flex-col items-center">
-                      <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-card-elevated">
-                        <Icon className="size-3.5 text-info" />
-                      </span>
-                      {i < arr.length - 1 && <span className="w-px flex-1 bg-border" />}
-                    </div>
-                    <div className="pt-0.5">
-                      <p className="text-sm font-medium text-foreground">
-                        {event.detail ?? statusLabel(event.event)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{formatDateTime(event.at)}</p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
-          ) : (
-            <Skeleton className="h-72 w-full" />
-          )}
-        </Card>
-
-        <Card className="rounded-2xl p-6 xl:col-span-2">
-          <h3 className="mb-4 font-semibold text-foreground">Recent transactions</h3>
-          <TxMiniTable filters={{ terminalId }} pageSize={8} />
-        </Card>
-      </div>
-
-      <ConfirmDialog
-        open={assignTarget !== null}
-        onOpenChange={(open) => !open && setAssignTarget(null)}
-        title="Change merchant assignment?"
-        description={
-          assignTarget === 'none'
-            ? `${terminalId} will be detached from its merchant.`
-            : `${terminalId} will be assigned to ${
-                merchants.data?.find((m) => m.id === assignTarget)?.name ?? assignTarget
-              }. This is recorded in the audit log.`
+          )
         }
-        confirmLabel="Confirm assignment"
-        pending={update.isPending}
-        onConfirm={() => {
-          update.mutate(
-            { merchantId: assignTarget === 'none' ? null : assignTarget },
-            { onSettled: () => setAssignTarget(null) },
-          );
-        }}
       />
+
+      {t ? (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <SectionCard title="Terminal">
+            <DetailList>
+              <DetailRow label="Merchant">
+                {t.merchantId && (
+                  <Link
+                    to="/merchants/$merchantId"
+                    params={{ merchantId: t.merchantId }}
+                    className="text-info hover:underline"
+                  >
+                    {t.merchantName ?? t.merchantId}
+                  </Link>
+                )}
+              </DetailRow>
+              <DetailRow label="Merchant external ID">{t.merchantExternalId}</DetailRow>
+              <DetailRow label="Contact person">{t.contactPersonName}</DetailRow>
+              <DetailRow label="Contact phone">{t.contactPhone}</DetailRow>
+              <DetailRow label="Last updated">{t.updatedAt && formatDateTime(t.updatedAt)}</DetailRow>
+            </DetailList>
+          </SectionCard>
+          <SectionCard
+            title="Current device"
+            actions={
+              <Can permission="terminals.write">
+                {t.currentDevice ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive"
+                    onClick={() => setDialog('unassign')}
+                  >
+                    <Unlink className="size-4" /> Unassign
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" onClick={() => setDialog('assign')}>
+                    <Link2 className="size-4" /> Assign device
+                  </Button>
+                )}
+              </Can>
+            }
+          >
+            {t.currentDevice ? (
+              <DetailList>
+                <DetailRow label="Palm module">{t.currentDevice.palmModuleSerialNumber}</DetailRow>
+                <DetailRow label="POS unit">{t.currentDevice.posUnitSerialNumber}</DetailRow>
+                <DetailRow label="Type">{statusLabel(t.currentDevice.type)}</DetailRow>
+                <DetailRow label="Assigned">{formatDateTime(t.currentDevice.assignedAt)}</DetailRow>
+              </DetailList>
+            ) : (
+              <p className="text-sm text-muted-foreground">No device is attached to this terminal.</p>
+            )}
+          </SectionCard>
+        </div>
+      ) : (
+        <Skeleton className="h-48 w-full rounded-2xl" />
+      )}
+
+      <SectionCard title="Device assignment history">
+        <DataTable
+          columns={historyColumns}
+          data={query.data?.assignmentHistory ?? []}
+          loading={query.isPending}
+          emptyState={{ title: 'No assignments', description: 'No device has been attached yet.' }}
+        />
+      </SectionCard>
+
+      {t && (
+        <>
+          <ActivateDialog open={dialog === 'activate'} onClose={close} terminal={t} />
+          <ResumeDialog open={dialog === 'resume'} onClose={close} terminal={t} />
+          <SuspendDialog open={dialog === 'suspend'} onClose={close} terminal={t} />
+          <AssignDialog open={dialog === 'assign'} onClose={close} terminal={t} />
+          <UnassignDialog open={dialog === 'unassign'} onClose={close} terminal={t} />
+        </>
+      )}
     </>
+  );
+}
+
+/** Date with the optional reason underneath. */
+function DateWithReason({ at, reason }: { at: string | null; reason: string | null }) {
+  return (
+    <div>
+      <p>{at ? formatDateTime(at) : '—'}</p>
+      {reason && <p className="text-xs text-muted-foreground">{reason}</p>}
+    </div>
+  );
+}
+
+const historyColumns: ColumnDef<DeviceAssignment>[] = [
+  col.text('palmModuleSerialNumber', 'Palm module', { strong: true }),
+  col.text('posUnitSerialNumber', 'POS unit'),
+  {
+    accessorKey: 'assignedAt',
+    header: 'Assigned',
+    cell: ({ row }) => (
+      <DateWithReason at={row.original.assignedAt} reason={row.original.assignReason} />
+    ),
+  },
+  {
+    accessorKey: 'unassignedAt',
+    header: 'Unassigned',
+    cell: ({ row }) =>
+      row.original.isOpen ? (
+        <span className="text-success">Current</span>
+      ) : (
+        <DateWithReason at={row.original.unassignedAt} reason={row.original.unassignReason} />
+      ),
+  },
+];
+
+const optionalReason = (reason: string) => reason.trim() || undefined;
+
+function ActivateDialog({ open, onClose, terminal }: DialogProps) {
+  const activate = useActivateTerminal(terminal.id);
+  return (
+    <ConfirmDialog
+      open={open}
+      onOpenChange={(o) => !o && onClose()}
+      title={`Activate terminal ${terminal.referenceId ?? ''}?`}
+      description="The terminal will start accepting palm payments."
+      confirmLabel="Activate"
+      pending={activate.isPending}
+      onConfirm={() => activate.mutate(undefined, { onSuccess: onClose })}
+    />
+  );
+}
+
+function ResumeDialog({ open, onClose, terminal }: DialogProps) {
+  const resume = useResumeTerminal(terminal.id);
+  return (
+    <ConfirmDialog
+      open={open}
+      onOpenChange={(o) => !o && onClose()}
+      title={`Resume terminal ${terminal.referenceId ?? ''}?`}
+      description="The terminal will resume accepting palm payments."
+      confirmLabel="Resume"
+      pending={resume.isPending}
+      onConfirm={() => resume.mutate(undefined, { onSuccess: onClose })}
+    />
+  );
+}
+
+function ReasonField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <FormField label="Reason">
+      <Textarea value={value} onChange={(e) => onChange(e.target.value)} />
+    </FormField>
+  );
+}
+
+function SuspendDialog({ open, onClose, terminal }: DialogProps) {
+  const suspend = useSuspendTerminal(terminal.id);
+  const [reason, setReason] = useState('');
+
+  return (
+    <ConfirmDialog
+      open={open}
+      onOpenChange={(o) => !o && onClose()}
+      title={`Suspend terminal ${terminal.referenceId ?? ''}?`}
+      description="Payments on this terminal will be blocked until it is resumed."
+      confirmLabel="Suspend"
+      destructive
+      pending={suspend.isPending}
+      onConfirm={() =>
+        suspend.mutate(
+          { reason: optionalReason(reason) },
+          {
+            onSuccess: () => {
+              setReason('');
+              onClose();
+            },
+          },
+        )
+      }
+    >
+      <ReasonField value={reason} onChange={setReason} />
+    </ConfirmDialog>
+  );
+}
+
+function AssignDialog({ open, onClose, terminal }: DialogProps) {
+  const assign = useAssignDevice(terminal.id);
+  const devices = useAvailableDevices(open);
+  const [deviceId, setDeviceId] = useState<string>();
+  const [serial, setSerial] = useState('');
+  const [reason, setReason] = useState('');
+
+  const close = () => {
+    setDeviceId(undefined);
+    setSerial('');
+    setReason('');
+    onClose();
+  };
+
+  const deviceOptions = (devices.data ?? []).map((d) => ({
+    value: d.id,
+    label: `${d.palmModuleSerialNumber ?? d.posUnitSerialNumber ?? d.id}${d.model ? ` · ${d.model}` : ''}`,
+  }));
+
+  return (
+    <ConfirmDialog
+      open={open}
+      onOpenChange={(o) => !o && close()}
+      title="Assign device"
+      description="Pick an in-stock device or enter its palm module serial number."
+      confirmLabel="Assign"
+      pending={assign.isPending}
+      disabled={!deviceId && !serial.trim()}
+      onConfirm={() =>
+        assign.mutate(
+          deviceId
+            ? { deviceId, reason: optionalReason(reason) }
+            : { palmModuleSerialNumber: serial.trim(), reason: optionalReason(reason) },
+          { onSuccess: close },
+        )
+      }
+    >
+      <div className="space-y-4">
+        <FormField label="In-stock device">
+          <OptionSelect
+            value={deviceId}
+            onChange={(v) => {
+              setDeviceId(v);
+              if (v) setSerial('');
+            }}
+            options={deviceOptions}
+            allLabel="— Enter serial instead —"
+            placeholder={devices.isPending ? 'Loading…' : 'Select device'}
+            className="w-full"
+          />
+        </FormField>
+        {!deviceId && (
+          <FormField label="Palm module serial number">
+            <Input value={serial} onChange={(e) => setSerial(e.target.value)} />
+          </FormField>
+        )}
+        <ReasonField value={reason} onChange={setReason} />
+      </div>
+    </ConfirmDialog>
+  );
+}
+
+const STATUS_AFTER_OPTIONS = enumOptions<DeviceStatus>(['InStock', 'InRepair', 'Retired']);
+
+function UnassignDialog({ open, onClose, terminal }: DialogProps) {
+  const unassign = useUnassignDevice(terminal.id);
+  const [reason, setReason] = useState('');
+  const [statusAfter, setStatusAfter] = useState<DeviceStatus>('InStock');
+
+  return (
+    <ConfirmDialog
+      open={open}
+      onOpenChange={(o) => !o && onClose()}
+      title="Unassign device"
+      description={`Detach ${terminal.currentDevice?.palmModuleSerialNumber ?? 'the device'} from this terminal.`}
+      confirmLabel="Unassign"
+      destructive
+      pending={unassign.isPending}
+      onConfirm={() =>
+        unassign.mutate(
+          { reason: optionalReason(reason), deviceStatusAfter: statusAfter },
+          {
+            onSuccess: () => {
+              setReason('');
+              setStatusAfter('InStock');
+              onClose();
+            },
+          },
+        )
+      }
+    >
+      <div className="space-y-4">
+        <FormField label="Device status after">
+          <OptionSelect
+            value={statusAfter}
+            onChange={(v) => v && setStatusAfter(v)}
+            options={STATUS_AFTER_OPTIONS}
+            className="w-full"
+          />
+        </FormField>
+        <ReasonField value={reason} onChange={setReason} />
+      </div>
+    </ConfirmDialog>
   );
 }

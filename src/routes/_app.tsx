@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { Topbar } from '@/components/layout/Topbar';
-import { CommandPalette } from '@/components/layout/CommandPalette';
-import { useIdleLogout } from '@/lib/session';
+import { useSessionGuard } from '@/lib/session';
 import { useAuthStore } from '@/stores/auth.store';
 import { useUiStore } from '@/stores/ui.store';
 import { cn } from '@/lib/utils';
@@ -18,9 +16,8 @@ export const Route = createFileRoute('/_app')({
 });
 
 function AppLayout() {
-  useIdleLogout();
+  useSessionGuard();
   const collapsed = useUiStore((s) => s.sidebarCollapsed);
-  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,12 +28,11 @@ function AppLayout() {
           collapsed ? 'pl-[72px]' : 'pl-[280px]',
         )}
       >
-        <Topbar onOpenSearch={() => setSearchOpen(true)} />
+        <Topbar />
         <main className="flex-1 space-y-6 p-6 xl:p-8">
           <Outlet />
         </main>
       </div>
-      <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} />
     </div>
   );
 }

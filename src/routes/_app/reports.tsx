@@ -1,35 +1,26 @@
 import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  BarChart3,
-  Download,
-  FileSpreadsheet,
-  FileText,
-  Landmark,
-  ShieldAlert,
-} from 'lucide-react';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { api } from '@/lib/api-client';
-import type { ExportRecord, Paginated, Transaction } from '@/types';
+import type { ColumnDef } from '@tanstack/react-table';
+import { BarChart3, Download, Eye, FileDown, Landmark, ShieldAlert } from 'lucide-react';
+import type { ReportPreviewRow, ReportRequest, ReportType } from '@/types';
 import { useMerchantOptions } from '@/features/merchants/api';
-import { formatDateTime, formatGEL } from '@/lib/format';
-import { downloadCsv } from '@/lib/csv';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  downloadReport,
+  useExportReport,
+  usePreviewReport,
+  useRecentReports,
+} from '@/features/reports/api';
+import { formatDate, formatDateTime, formatMoney, formatNumber } from '@/lib/format';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { EmptyState } from '@/components/shared/EmptyState';
-import { Can } from '@/components/shared/Can';
-import { statusLabel } from '@/components/shared/StatusText';
+import { ErrorState } from '@/components/shared/ErrorState';
+import { SectionCard } from '@/components/shared/SectionCard';
+import { DataTable } from '@/components/shared/DataTable';
+import { LoadingButton } from '@/components/shared/LoadingButton';
+import { OptionSelect } from '@/components/shared/OptionSelect';
+import { col } from '@/components/shared/columns';
 import {
   PeriodPicker,
   usePeriodRange,
@@ -41,129 +32,72 @@ export const Route = createFileRoute('/_app/reports')({
   component: ReportsPage,
 });
 
-type ReportType = 'turnover' | 'settlement' | 'failed';
-
 const REPORTS: { type: ReportType; title: string; description: string; icon: typeof BarChart3 }[] = [
   {
-    type: 'turnover',
+    type: 'Turnover',
     title: 'Turnover report',
-    description: 'Volume, transactions and commission by merchant',
+    description: 'Volume and transactions by merchant and terminal',
     icon: BarChart3,
   },
   {
-    type: 'settlement',
+    type: 'Settlement',
     title: 'Settlement report',
-    description: 'Settlement status of successful transactions',
+    description: 'Settlement of successful transactions',
     icon: Landmark,
   },
   {
-    type: 'failed',
+    type: 'Failed',
     title: 'Failed transactions report',
     description: 'All failed operations with error codes and reasons',
     icon: ShieldAlert,
   },
 ];
 
-interface MerchantAgg {
-  merchantId: string;
-  merchantName: string;
-  volume: number;
-  count: number;
-  commission: number;
-}
+const REPORT_TITLES = Object.fromEntries(REPORTS.map((r) => [r.type, r.title])) as Record<
+  ReportType,
+  string
+>;
+
+const previewColumns: ColumnDef<ReportPreviewRow>[] = [
+  col.date<ReportPreviewRow>('occurredAt', 'Date'),
+  col.text<ReportPreviewRow>('merchantName', 'Merchant', { strong: true }),
+  col.text<ReportPreviewRow>('terminalReference', 'Terminal', { muted: true }),
+  col.money<ReportPreviewRow>('amount', 'Amount', 'currency'),
+  col.label<ReportPreviewRow>('status', 'Status'),
+  col.mono<ReportPreviewRow>('reference', 'Reference'),
+];
 
 function ReportsPage() {
-  const queryClient = useQueryClient();
   const merchants = useMerchantOptions();
-  const [reportType, setReportType] = useState<ReportType>('turnover');
+  const [reportType, setReportType] = useState<ReportType>('Turnover');
   const [period, setPeriod] = useState<PeriodValue>({ period: '30d' });
-  const [merchantScope, setMerchantScope] = useState<string>('all');
+  const [merchantId, setMerchantId] = useState<string | undefined>();
   const range = usePeriodRange(period);
 
-  const scopeLabel =
-    merchantScope === 'all'
-      ? 'All merchants'
-      : (merchants.data?.find((m) => m.id === merchantScope)?.name ?? merchantScope);
+  const preview = usePreviewReport();
+  const exportReport = useExportReport();
+  const recent = useRecentReports(10);
 
-  const turnoverPreview = useQuery({
-    queryKey: ['reports', 'turnover', range, merchantScope],
-    queryFn: () => api.get<MerchantAgg[]>('/analytics/by-merchant', range),
-    enabled: reportType === 'turnover',
-    select: (rows) =>
-      merchantScope === 'all' ? rows : rows.filter((r) => r.merchantId === merchantScope),
-  });
-
-  const txPreview = useQuery({
-    queryKey: ['reports', 'tx', reportType, range, merchantScope],
-    queryFn: () =>
-      api.get<Paginated<Transaction>>('/transactions', {
-        ...range,
-        pageSize: 50,
-        status: reportType === 'failed' ? ['failed'] : ['success'],
-        merchantId: merchantScope === 'all' ? undefined : [merchantScope],
-      }),
-    enabled: reportType !== 'turnover',
-  });
-
-  const exports = useQuery({
-    queryKey: ['reports', 'exports'],
-    queryFn: () => api.get<ExportRecord[]>('/reports/exports'),
-  });
-
-  const reportMeta = REPORTS.find((r) => r.type === reportType)!;
-
-  const serverExport = useMutation({
-    mutationFn: (fmt: 'pdf' | 'xlsx') =>
-      api.post('/reports/export', {
-        report: reportMeta.title,
-        format: fmt,
-        scope: `${scopeLabel} — ${format(new Date(range.from), 'dd MMM')} to ${format(new Date(range.to), 'dd MMM yyyy')}`,
-      }),
-    onSuccess: (_, fmt) => {
-      void queryClient.invalidateQueries({ queryKey: ['reports', 'exports'] });
-      toast.success(`${fmt.toUpperCase()} export generated`, {
-        description: 'Download will start automatically (mock).',
-      });
-    },
-    onError: () => toast.error('Export failed'),
-  });
-
-  const exportCsv = () => {
-    if (reportType === 'turnover') {
-      downloadCsv(
-        `turnover-report-${format(new Date(), 'yyyyMMdd')}`,
-        (turnoverPreview.data ?? []).map((r) => ({
-          merchant: r.merchantName,
-          transactions: r.count,
-          volume: r.volume,
-          commission: r.commission,
-        })),
-      );
-    } else {
-      downloadCsv(
-        `${reportType}-report-${format(new Date(), 'yyyyMMdd')}`,
-        (txPreview.data?.data ?? []).map((t) => ({
-          id: t.id,
-          occurredAt: t.occurredAt,
-          merchantId: t.merchantId,
-          terminalId: t.terminalId,
-          amount: t.amount,
-          status: t.status,
-          errorCode: t.errorCode ?? '',
-          failureReason: t.failureReason ?? '',
-          settlementStatus: t.settlementStatus,
-        })),
-      );
-    }
-    void api.post('/reports/export', {
-      report: reportMeta.title,
-      format: 'csv',
-      scope: scopeLabel,
-    });
-    void queryClient.invalidateQueries({ queryKey: ['reports', 'exports'] });
+  const request: ReportRequest = {
+    reportType,
+    dateFrom: range.from,
+    dateTo: range.to,
+    merchantId,
   };
 
-  const previewLoading = reportType === 'turnover' ? turnoverPreview.isPending : txPreview.isPending;
+  // Any change to the builder invalidates the shown preview / export.
+  const resetResults = () => {
+    preview.reset();
+    exportReport.reset();
+  };
+
+  const merchantOptions = (merchants.data ?? []).map((m) => ({ value: m.id, label: m.name }));
+  const scopeLabel = merchantId
+    ? (merchantOptions.find((m) => m.value === merchantId)?.label ?? merchantId)
+    : 'All merchants';
+
+  const exported = exportReport.data;
+  const p = preview.data;
 
   return (
     <>
@@ -173,7 +107,10 @@ function ReportsPage() {
         {REPORTS.map((r) => (
           <button
             key={r.type}
-            onClick={() => setReportType(r.type)}
+            onClick={() => {
+              setReportType(r.type);
+              resetResults();
+            }}
             className={cn(
               'rounded-2xl border p-5 text-left transition-colors',
               reportType === r.type
@@ -193,149 +130,118 @@ function ReportsPage() {
         ))}
       </div>
 
-      <Card className="rounded-2xl p-6">
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <SectionCard>
+        <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-3">
-            <PeriodPicker value={period} onChange={setPeriod} />
-            <Select value={merchantScope} onValueChange={setMerchantScope}>
-              <SelectTrigger className="w-56">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All merchants</SelectItem>
-                {(merchants.data ?? []).map((m) => (
-                  <SelectItem key={m.id} value={m.id}>
-                    {m.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <PeriodPicker
+              value={period}
+              onChange={(v) => {
+                setPeriod(v);
+                resetResults();
+              }}
+            />
+            <OptionSelect
+              value={merchantId}
+              onChange={(v) => {
+                setMerchantId(v);
+                resetResults();
+              }}
+              options={merchantOptions}
+              allLabel="All merchants"
+              className="w-56"
+            />
           </div>
-          <Can permission="reports.export" fallback={
-            <p className="text-sm text-muted-foreground">Export requires Finance Admin role</p>
-          }>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={exportCsv}>
-                <Download className="size-4" /> CSV
-              </Button>
-              <Button variant="outline" onClick={() => serverExport.mutate('xlsx')} disabled={serverExport.isPending}>
-                <FileSpreadsheet className="size-4" /> Excel
-              </Button>
-              <Button variant="outline" onClick={() => serverExport.mutate('pdf')} disabled={serverExport.isPending}>
-                <FileText className="size-4" /> PDF
-              </Button>
-            </div>
-          </Can>
+          <div className="flex items-center gap-2">
+            <LoadingButton
+              variant="outline"
+              pending={preview.isPending}
+              icon={<Eye className="size-4" />}
+              onClick={() => preview.mutate(request)}
+            >
+              Preview
+            </LoadingButton>
+            <LoadingButton
+              pending={exportReport.isPending}
+              icon={<FileDown className="size-4" />}
+              onClick={() => exportReport.mutate(request)}
+            >
+              Export
+            </LoadingButton>
+          </div>
         </div>
 
-        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-          Preview · {reportMeta.title} · {scopeLabel}
+        {exported && (
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-success/40 bg-success/10 px-4 py-3 text-sm">
+            <span className="font-medium text-foreground">
+              {exported.fileName ?? 'Report'} is ready
+            </span>
+            <span className="text-muted-foreground">
+              {formatNumber(exported.rowCount)} rows
+            </span>
+            <Button size="sm" className="ml-auto" onClick={() => void downloadReport(exported)}>
+              <Download className="size-4" /> Download
+            </Button>
+          </div>
+        )}
+
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Preview · {REPORT_TITLES[reportType]} · {scopeLabel}
         </h3>
 
-        {previewLoading ? (
+        {preview.isPending ? (
           <Skeleton className="h-72 w-full" />
-        ) : reportType === 'turnover' ? (
-          (turnoverPreview.data ?? []).length === 0 ? (
-            <EmptyState title="No data in this period" />
-          ) : (
-            <PreviewTable
-              headers={['Merchant', 'Transactions', 'Volume', 'Commission']}
-              rows={(turnoverPreview.data ?? []).slice(0, 12).map((r) => [
-                r.merchantName,
-                String(r.count),
-                formatGEL(r.volume),
-                formatGEL(r.commission),
-              ])}
-            />
-          )
-        ) : (txPreview.data?.data ?? []).length === 0 ? (
+        ) : !p ? (
+          <EmptyState
+            title="No preview yet"
+            description="Choose a report, period and merchant, then click Preview."
+          />
+        ) : p.rows.length === 0 ? (
           <EmptyState title="No data in this period" />
         ) : (
-          <PreviewTable
-            headers={
-              reportType === 'failed'
-                ? ['TX ID', 'Date', 'Terminal', 'Amount', 'Error', 'Reason']
-                : ['TX ID', 'Date', 'Terminal', 'Amount', 'Settlement', 'Settled at']
-            }
-            rows={(txPreview.data?.data ?? []).slice(0, 12).map((t) =>
-              reportType === 'failed'
-                ? [
-                    t.id,
-                    formatDateTime(t.occurredAt),
-                    t.terminalId,
-                    formatGEL(t.amount),
-                    t.errorCode ?? '—',
-                    statusLabel(t.failureReason ?? '—'),
-                  ]
-                : [
-                    t.id,
-                    formatDateTime(t.occurredAt),
-                    t.terminalId,
-                    formatGEL(t.amount),
-                    statusLabel(t.settlementStatus),
-                    t.settledAt ? formatDateTime(t.settledAt) : '—',
-                  ],
-            )}
-          />
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              {formatNumber(p.rowCount)} rows · total{' '}
+              <span className="font-semibold text-foreground">{formatMoney(p.totalAmount)}</span>
+              {p.rows.length < p.rowCount && ` · showing first ${p.rows.length}`}
+            </p>
+            <DataTable columns={previewColumns} data={p.rows} />
+          </div>
         )}
-      </Card>
+      </SectionCard>
 
-      <Card className="rounded-2xl p-6">
-        <h3 className="mb-4 font-semibold text-foreground">Recent exports</h3>
-        {exports.isPending ? (
+      <SectionCard title="Recent exports">
+        {recent.isError ? (
+          <ErrorState onRetry={() => void recent.refetch()} />
+        ) : recent.isPending ? (
           <Skeleton className="h-40 w-full" />
+        ) : (recent.data ?? []).length === 0 ? (
+          <EmptyState title="No exports yet" />
         ) : (
           <ul className="space-y-2">
-            {(exports.data ?? []).slice(0, 8).map((e) => (
+            {(recent.data ?? []).map((e) => (
               <li
                 key={e.id}
                 className="flex flex-wrap items-center gap-3 rounded-xl bg-card-elevated px-4 py-3 text-sm"
               >
                 <span className="rounded-md bg-card px-2 py-0.5 font-mono text-xs uppercase text-info">
-                  {e.format}
+                  {e.reportType}
                 </span>
-                <span className="font-medium text-foreground">{e.report}</span>
-                <span className="text-muted-foreground">{e.scope}</span>
+                <span className="font-medium text-foreground">{e.fileName ?? e.id}</span>
+                <span className="text-muted-foreground">
+                  {formatDate(e.dateFrom)} – {formatDate(e.dateTo)} ·{' '}
+                  {formatNumber(e.rowCount)} rows
+                </span>
                 <span className="ml-auto text-xs text-muted-foreground">
-                  {formatDateTime(e.at)} · {e.byUser}
+                  {formatDateTime(e.createdAt)}
                 </span>
+                <Button size="sm" variant="outline" onClick={() => void downloadReport(e)}>
+                  <Download className="size-4" /> Download
+                </Button>
               </li>
             ))}
           </ul>
         )}
-      </Card>
+      </SectionCard>
     </>
-  );
-}
-
-function PreviewTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
-  return (
-    <div className="overflow-hidden rounded-xl border border-border">
-      <table className="w-full text-sm">
-        <thead className="bg-card-elevated/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
-          <tr>
-            {headers.map((h) => (
-              <th key={h} className="px-4 py-2.5 font-semibold">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i} className="border-t border-border">
-              {row.map((cell, j) => (
-                <td
-                  key={j}
-                  className={cn('px-4 py-2.5', j === 0 ? 'font-medium text-foreground' : 'text-muted-foreground')}
-                >
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
   );
 }

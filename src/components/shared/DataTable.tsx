@@ -1,11 +1,5 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-  type SortingState,
-} from '@tanstack/react-table';
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -17,13 +11,18 @@ import {
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { ErrorState } from '@/components/shared/ErrorState';
 import { cn } from '@/lib/utils';
 import type { ReactNode } from 'react';
 
 interface DataTableProps<TData> {
-  columns: ColumnDef<TData>[];
+  // `any`: columns of one table have different value types.
+  columns: ColumnDef<TData, any>[];
   data: TData[];
   loading?: boolean;
+  /** Shows an error state with a retry button instead of the table. */
+  error?: boolean;
+  onRetry?: () => void;
   /** Server-style pagination meta; omit to hide the pager. */
   pagination?: {
     page: number;
@@ -31,41 +30,30 @@ interface DataTableProps<TData> {
     total: number;
     onPageChange: (page: number) => void;
   };
-  sorting?: {
-    state: SortingState;
-    onChange: (state: SortingState) => void;
-  };
   onRowClick?: (row: TData) => void;
   emptyState?: { title: string; description?: string; action?: ReactNode };
-  rowClassName?: (row: TData) => string | undefined;
 }
 
 export function DataTable<TData>({
   columns,
   data,
   loading,
+  error,
+  onRetry,
   pagination,
-  sorting,
   onRowClick,
   emptyState,
-  rowClassName,
 }: DataTableProps<TData>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    manualSorting: true,
     manualPagination: true,
-    state: { sorting: sorting?.state ?? [] },
-    onSortingChange: (updater) => {
-      if (!sorting) return;
-      const next = typeof updater === 'function' ? updater(sorting.state) : updater;
-      sorting.onChange(next);
-    },
-    enableSorting: Boolean(sorting),
   });
 
   const pageCount = pagination ? Math.max(1, Math.ceil(pagination.total / pagination.pageSize)) : 1;
+
+  if (error) return <ErrorState onRetry={onRetry} />;
 
   if (!loading && data.length === 0) {
     return (
@@ -84,32 +72,14 @@ export function DataTable<TData>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="border-border bg-card-elevated/50 hover:bg-card-elevated/50">
-                {headerGroup.headers.map((header) => {
-                  const canSort = header.column.getCanSort();
-                  const dir = header.column.getIsSorted();
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className={cn(
-                        'h-11 whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground',
-                        canSort && 'cursor-pointer select-none',
-                      )}
-                      onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
-                    >
-                      <span className="inline-flex items-center gap-1.5">
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {canSort &&
-                          (dir === 'asc' ? (
-                            <ArrowUp className="size-3.5" />
-                          ) : dir === 'desc' ? (
-                            <ArrowDown className="size-3.5" />
-                          ) : (
-                            <ArrowUpDown className="size-3.5 opacity-40" />
-                          ))}
-                      </span>
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="h-11 whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -128,11 +98,7 @@ export function DataTable<TData>({
                   <TableRow
                     key={row.id}
                     onClick={onRowClick ? () => onRowClick(row.original) : undefined}
-                    className={cn(
-                      'border-border',
-                      onRowClick && 'cursor-pointer',
-                      rowClassName?.(row.original),
-                    )}
+                    className={cn('border-border', onRowClick && 'cursor-pointer')}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="whitespace-nowrap py-3.5">

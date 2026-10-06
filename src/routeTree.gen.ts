@@ -14,14 +14,9 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppUsersRouteImport } from './routes/_app/users'
 import { Route as AppTransactionsRouteImport } from './routes/_app/transactions'
-import { Route as AppSystemLogsRouteImport } from './routes/_app/system-logs'
-import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppReportsRouteImport } from './routes/_app/reports'
 import { Route as AppFailedTransactionsRouteImport } from './routes/_app/failed-transactions'
-import { Route as AppCommissionsRouteImport } from './routes/_app/commissions'
-import { Route as AppAuditLogsRouteImport } from './routes/_app/audit-logs'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
-import { Route as AppAlertsRouteImport } from './routes/_app/alerts'
 import { Route as AppTerminalsIndexRouteImport } from './routes/_app/terminals/index'
 import { Route as AppMerchantsIndexRouteImport } from './routes/_app/merchants/index'
 import { Route as AppTerminalsTerminalIdRouteImport } from './routes/_app/terminals/$terminalId'
@@ -51,16 +46,6 @@ const AppTransactionsRoute = AppTransactionsRouteImport.update({
   path: '/transactions',
   getParentRoute: () => AppRoute,
 } as any)
-const AppSystemLogsRoute = AppSystemLogsRouteImport.update({
-  id: '/system-logs',
-  path: '/system-logs',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppReportsRoute = AppReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -71,24 +56,9 @@ const AppFailedTransactionsRoute = AppFailedTransactionsRouteImport.update({
   path: '/failed-transactions',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCommissionsRoute = AppCommissionsRouteImport.update({
-  id: '/commissions',
-  path: '/commissions',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAuditLogsRoute = AppAuditLogsRouteImport.update({
-  id: '/audit-logs',
-  path: '/audit-logs',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAlertsRoute = AppAlertsRouteImport.update({
-  id: '/alerts',
-  path: '/alerts',
   getParentRoute: () => AppRoute,
 } as any)
 const AppTerminalsIndexRoute = AppTerminalsIndexRouteImport.update({
@@ -115,14 +85,9 @@ const AppMerchantsMerchantIdRoute = AppMerchantsMerchantIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
-  '/alerts': typeof AppAlertsRoute
   '/analytics': typeof AppAnalyticsRoute
-  '/audit-logs': typeof AppAuditLogsRoute
-  '/commissions': typeof AppCommissionsRoute
   '/failed-transactions': typeof AppFailedTransactionsRoute
   '/reports': typeof AppReportsRoute
-  '/settings': typeof AppSettingsRoute
-  '/system-logs': typeof AppSystemLogsRoute
   '/transactions': typeof AppTransactionsRoute
   '/users': typeof AppUsersRoute
   '/merchants/$merchantId': typeof AppMerchantsMerchantIdRoute
@@ -132,14 +97,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/alerts': typeof AppAlertsRoute
   '/analytics': typeof AppAnalyticsRoute
-  '/audit-logs': typeof AppAuditLogsRoute
-  '/commissions': typeof AppCommissionsRoute
   '/failed-transactions': typeof AppFailedTransactionsRoute
   '/reports': typeof AppReportsRoute
-  '/settings': typeof AppSettingsRoute
-  '/system-logs': typeof AppSystemLogsRoute
   '/transactions': typeof AppTransactionsRoute
   '/users': typeof AppUsersRoute
   '/': typeof AppIndexRoute
@@ -152,14 +112,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
-  '/_app/alerts': typeof AppAlertsRoute
   '/_app/analytics': typeof AppAnalyticsRoute
-  '/_app/audit-logs': typeof AppAuditLogsRoute
-  '/_app/commissions': typeof AppCommissionsRoute
   '/_app/failed-transactions': typeof AppFailedTransactionsRoute
   '/_app/reports': typeof AppReportsRoute
-  '/_app/settings': typeof AppSettingsRoute
-  '/_app/system-logs': typeof AppSystemLogsRoute
   '/_app/transactions': typeof AppTransactionsRoute
   '/_app/users': typeof AppUsersRoute
   '/_app/': typeof AppIndexRoute
@@ -173,14 +128,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
-    | '/alerts'
     | '/analytics'
-    | '/audit-logs'
-    | '/commissions'
     | '/failed-transactions'
     | '/reports'
-    | '/settings'
-    | '/system-logs'
     | '/transactions'
     | '/users'
     | '/merchants/$merchantId'
@@ -190,14 +140,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
-    | '/alerts'
     | '/analytics'
-    | '/audit-logs'
-    | '/commissions'
     | '/failed-transactions'
     | '/reports'
-    | '/settings'
-    | '/system-logs'
     | '/transactions'
     | '/users'
     | '/'
@@ -209,14 +154,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/login'
-    | '/_app/alerts'
     | '/_app/analytics'
-    | '/_app/audit-logs'
-    | '/_app/commissions'
     | '/_app/failed-transactions'
     | '/_app/reports'
-    | '/_app/settings'
-    | '/_app/system-logs'
     | '/_app/transactions'
     | '/_app/users'
     | '/_app/'
@@ -268,20 +208,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTransactionsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/system-logs': {
-      id: '/_app/system-logs'
-      path: '/system-logs'
-      fullPath: '/system-logs'
-      preLoaderRoute: typeof AppSystemLogsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/settings': {
-      id: '/_app/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/reports': {
       id: '/_app/reports'
       path: '/reports'
@@ -296,32 +222,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFailedTransactionsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/commissions': {
-      id: '/_app/commissions'
-      path: '/commissions'
-      fullPath: '/commissions'
-      preLoaderRoute: typeof AppCommissionsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/audit-logs': {
-      id: '/_app/audit-logs'
-      path: '/audit-logs'
-      fullPath: '/audit-logs'
-      preLoaderRoute: typeof AppAuditLogsRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/analytics': {
       id: '/_app/analytics'
       path: '/analytics'
       fullPath: '/analytics'
       preLoaderRoute: typeof AppAnalyticsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/alerts': {
-      id: '/_app/alerts'
-      path: '/alerts'
-      fullPath: '/alerts'
-      preLoaderRoute: typeof AppAlertsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/terminals/': {
@@ -356,14 +261,9 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
-  AppAlertsRoute: typeof AppAlertsRoute
   AppAnalyticsRoute: typeof AppAnalyticsRoute
-  AppAuditLogsRoute: typeof AppAuditLogsRoute
-  AppCommissionsRoute: typeof AppCommissionsRoute
   AppFailedTransactionsRoute: typeof AppFailedTransactionsRoute
   AppReportsRoute: typeof AppReportsRoute
-  AppSettingsRoute: typeof AppSettingsRoute
-  AppSystemLogsRoute: typeof AppSystemLogsRoute
   AppTransactionsRoute: typeof AppTransactionsRoute
   AppUsersRoute: typeof AppUsersRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -374,14 +274,9 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAlertsRoute: AppAlertsRoute,
   AppAnalyticsRoute: AppAnalyticsRoute,
-  AppAuditLogsRoute: AppAuditLogsRoute,
-  AppCommissionsRoute: AppCommissionsRoute,
   AppFailedTransactionsRoute: AppFailedTransactionsRoute,
   AppReportsRoute: AppReportsRoute,
-  AppSettingsRoute: AppSettingsRoute,
-  AppSystemLogsRoute: AppSystemLogsRoute,
   AppTransactionsRoute: AppTransactionsRoute,
   AppUsersRoute: AppUsersRoute,
   AppIndexRoute: AppIndexRoute,

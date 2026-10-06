@@ -20,7 +20,7 @@ export function SimpleLineChart({
   referenceY,
   referenceLabel,
 }: {
-  data: Record<string, unknown>[];
+  data: object[];
   xKey: string;
   yKey: string;
   color?: string;

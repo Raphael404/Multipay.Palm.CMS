@@ -16,7 +16,7 @@ export function AreaVolumeChart({
   yKey = 'volume',
   height = 260,
 }: {
-  data: Record<string, unknown>[];
+  data: object[];
   xKey: string;
   yKey?: string;
   height?: number;

@@ -1,21 +1,14 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
-import type { Merchant } from '@/types';
-import { useCreateMerchant, useUpdateMerchant } from '@/features/merchants/api';
+import { MERCHANT_STATUSES, type MerchantDetail } from '@/types';
+import { useUpdateMerchant } from '@/features/merchants/api';
 import { merchantFormSchema, type MerchantFormValues } from '@/features/merchants/schemas';
-import { statusLabel } from '@/components/shared/StatusText';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { FormField } from '@/components/shared/FormField';
+import { LoadingButton } from '@/components/shared/LoadingButton';
+import { OptionSelect, enumOptions } from '@/components/shared/OptionSelect';
 import {
   Sheet,
   SheetContent,
@@ -25,16 +18,30 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 
-const STATUSES = ['active', 'suspended', 'pending_kyc', 'closed'] as const;
+type TextField = Exclude<keyof MerchantFormValues, 'status'>;
 
-const EMPTY: MerchantFormValues = {
-  name: '',
-  legalName: '',
-  taxId: '',
-  status: 'pending_kyc',
-  commissionRate: 2.0,
-  contact: { person: '', phone: '', email: '', address: '' },
-};
+const STATUS_OPTIONS = enumOptions(MERCHANT_STATUSES);
+
+const TEXT_FIELDS = [
+  'merchantName',
+  'merchantExternalId',
+  'customerName',
+  'taxCode',
+  'brandName',
+  'region',
+  'district',
+  'address',
+  'profile',
+  'merchantCategory',
+  'contactPhone',
+  'contactPersonName',
+] as const satisfies readonly TextField[];
+
+function toFormValues(m: MerchantDetail): MerchantFormValues {
+  const values = { status: m.status } as MerchantFormValues;
+  for (const key of TEXT_FIELDS) values[key] = m[key] ?? '';
+  return values;
+}
 
 export function MerchantFormSheet({
   open,
@@ -43,110 +50,81 @@ export function MerchantFormSheet({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  merchant?: Merchant | null;
+  merchant: MerchantDetail;
 }) {
-  const isEdit = Boolean(merchant);
-  const create = useCreateMerchant();
-  const update = useUpdateMerchant(merchant?.id ?? '');
-  const pending = create.isPending || update.isPending;
+  const update = useUpdateMerchant(merchant.id);
 
   const form = useForm<MerchantFormValues>({
     resolver: zodResolver(merchantFormSchema),
-    defaultValues: EMPTY,
+    defaultValues: toFormValues(merchant),
   });
 
   useEffect(() => {
-    if (open) {
-      form.reset(
-        merchant
-          ? {
-              name: merchant.name,
-              legalName: merchant.legalName,
-              taxId: merchant.taxId,
-              status: merchant.status,
-              commissionRate: merchant.commissionRate,
-              contact: { ...merchant.contact },
-            }
-          : EMPTY,
-      );
-    }
+    if (open) form.reset(toFormValues(merchant));
   }, [open, merchant, form]);
 
-  const onSubmit = form.handleSubmit((values) => {
-    const action = isEdit ? update : create;
-    action.mutate(values, { onSuccess: () => onOpenChange(false) });
+  const onSubmit = form.handleSubmit((v) => {
+    // Optional fields are sent as null when left empty.
+    const input = { id: merchant.id, status: v.status } as Parameters<typeof update.mutate>[0];
+    for (const key of TEXT_FIELDS) input[key] = v[key] === '' ? null : v[key];
+    update.mutate(input, { onSuccess: () => onOpenChange(false) });
   });
 
   const err = form.formState.errors;
+  const text = (name: TextField, label: string, placeholder?: string) => (
+    <FormField label={label} error={err[name]?.message}>
+      <Input placeholder={placeholder} {...form.register(name)} />
+    </FormField>
+  );
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
         <SheetHeader>
-          <SheetTitle>{isEdit ? `Edit ${merchant?.name}` : 'Add merchant'}</SheetTitle>
-          <SheetDescription>
-            {isEdit
-              ? 'Update legal information, contacts and commission rate.'
-              : 'Register a new merchant. New merchants start in Pending KYC.'}
-          </SheetDescription>
+          <SheetTitle>Edit {merchant.merchantName ?? 'merchant'}</SheetTitle>
+          <SheetDescription>Update legal information, location and contacts.</SheetDescription>
         </SheetHeader>
 
         <form onSubmit={onSubmit} className="space-y-4 px-4 pb-4">
-          <Field label="Display name" error={err.name?.message}>
-            <Input placeholder="Agrohub Vake" {...form.register('name')} />
-          </Field>
+          {text('merchantName', 'Merchant name')}
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Legal name" error={err.legalName?.message}>
-              <Input placeholder="Agrohub LLC" {...form.register('legalName')} />
-            </Field>
-            <Field label="Tax ID" error={err.taxId?.message}>
-              <Input placeholder="405123456" inputMode="numeric" {...form.register('taxId')} />
-            </Field>
+            {text('brandName', 'Brand name')}
+            {text('customerName', 'Customer name')}
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Status" error={err.status?.message}>
-              <Select
+            {text('taxCode', 'Tax code')}
+            {text('merchantExternalId', 'External ID')}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <FormField label="Status" error={err.status?.message}>
+              <OptionSelect
                 value={form.watch('status')}
-                onValueChange={(v) => form.setValue('status', v as MerchantFormValues['status'])}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {STATUSES.map((s) => (
-                    <SelectItem key={s} value={s}>
-                      {statusLabel(s)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field label="Commission rate (%)" error={err.commissionRate?.message}>
-              <Input type="number" step="0.1" {...form.register('commissionRate')} />
-            </Field>
+                onChange={(v) => v && form.setValue('status', v)}
+                options={STATUS_OPTIONS}
+                className="w-full"
+              />
+            </FormField>
+            {text('merchantCategory', 'Category')}
           </div>
+          {text('profile', 'Profile')}
+
+          <p className="pt-2 text-sm font-semibold text-foreground">Location</p>
+          <div className="grid grid-cols-2 gap-3">
+            {text('region', 'Region')}
+            {text('district', 'District')}
+          </div>
+          {text('address', 'Address')}
 
           <p className="pt-2 text-sm font-semibold text-foreground">Contact</p>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Contact person" error={err.contact?.person?.message}>
-              <Input placeholder="Giorgi Beridze" {...form.register('contact.person')} />
-            </Field>
-            <Field label="Phone" error={err.contact?.phone?.message}>
-              <Input placeholder="+995 5XX XX XX XX" {...form.register('contact.phone')} />
-            </Field>
+            {text('contactPersonName', 'Contact person')}
+            {text('contactPhone', 'Phone', '+995 5XX XX XX XX')}
           </div>
-          <Field label="Email" error={err.contact?.email?.message}>
-            <Input type="email" placeholder="office@merchant.ge" {...form.register('contact.email')} />
-          </Field>
-          <Field label="Address" error={err.contact?.address?.message}>
-            <Input placeholder="12 Chavchavadze Ave, Tbilisi" {...form.register('contact.address')} />
-          </Field>
 
           <SheetFooter className="px-0">
-            <Button type="submit" disabled={pending}>
-              {pending && <Loader2 className="size-4 animate-spin" />}
-              {isEdit ? 'Save changes' : 'Create merchant'}
-            </Button>
+            <LoadingButton type="submit" pending={update.isPending}>
+              Save changes
+            </LoadingButton>
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
@@ -154,23 +132,5 @@ export function MerchantFormSheet({
         </form>
       </SheetContent>
     </Sheet>
-  );
-}
-
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <Label>{label}</Label>
-      {children}
-      {error && <p className="text-xs text-destructive">{error}</p>}
-    </div>
   );
 }

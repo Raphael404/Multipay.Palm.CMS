@@ -1,44 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
-import type { MerchantStatus } from '@/types';
+import type { HourlyDataPoint, Kpis, RecentTransaction, SuccessRatio, TopMerchant } from '@/types';
 
-export interface DashboardSummary {
-  activeTerminals: number;
-  terminalsDeltaWeek: number;
-  todayVolume: number;
-  todayVolumeDeltaPct: number;
-  successRate24h: number;
-  registeredUsers: number;
-  registeredUsersToday: number;
-  totalTurnover30d: number;
-  failedCount30d: number;
-  activeMerchants: number;
-  avgTransaction30d: number;
-  onlineOfflineSplit: { online: number; offline: number; maintenance: number };
-}
-
-export interface TopMerchant {
-  id: string;
-  name: string;
-  status: MerchantStatus;
-  activeTerminals: number;
-  todayTurnover: number;
-}
-
-const POLL = 15_000;
+const POLL = 30_000;
 
 export const dashboardKeys = {
   all: ['dashboard'] as const,
-  summary: () => [...dashboardKeys.all, 'summary'] as const,
+  kpis: () => [...dashboardKeys.all, 'kpis'] as const,
   hourlyVolume: () => [...dashboardKeys.all, 'hourly-volume'] as const,
-  statusRatio: () => [...dashboardKeys.all, 'status-ratio'] as const,
-  topMerchants: () => [...dashboardKeys.all, 'top-merchants'] as const,
+  successRatio: () => [...dashboardKeys.all, 'success-ratio'] as const,
+  topMerchants: (limit: number) => [...dashboardKeys.all, 'top-merchants', limit] as const,
+  recentTransactions: (limit: number) =>
+    [...dashboardKeys.all, 'recent-transactions', limit] as const,
 };
 
-export function useDashboardSummary() {
+export function useKpis() {
   return useQuery({
-    queryKey: dashboardKeys.summary(),
-    queryFn: () => api.get<DashboardSummary>('/dashboard/summary'),
+    queryKey: dashboardKeys.kpis(),
+    queryFn: () => api.get<Kpis>('/dashboard/kpis'),
     refetchInterval: POLL,
   });
 }
@@ -46,23 +25,35 @@ export function useDashboardSummary() {
 export function useHourlyVolume() {
   return useQuery({
     queryKey: dashboardKeys.hourlyVolume(),
-    queryFn: () => api.get<{ hour: string; volume: number; count: number }[]>('/dashboard/hourly-volume'),
+    queryFn: () => api.get<{ items: HourlyDataPoint[] }>('/dashboard/hourly-volume'),
+    select: (res) => res.items,
     refetchInterval: POLL,
   });
 }
 
-export function useStatusRatio() {
+export function useSuccessRatio() {
   return useQuery({
-    queryKey: dashboardKeys.statusRatio(),
-    queryFn: () => api.get<{ status: string; count: number }[]>('/dashboard/status-ratio'),
+    queryKey: dashboardKeys.successRatio(),
+    queryFn: () => api.get<SuccessRatio>('/dashboard/success-ratio'),
     refetchInterval: POLL,
   });
 }
 
-export function useTopMerchants() {
+export function useTopMerchants(limit = 5) {
   return useQuery({
-    queryKey: dashboardKeys.topMerchants(),
-    queryFn: () => api.get<TopMerchant[]>('/dashboard/top-merchants'),
+    queryKey: dashboardKeys.topMerchants(limit),
+    queryFn: () => api.get<{ merchants: TopMerchant[] }>('/dashboard/top-merchants', { limit }),
+    select: (res) => res.merchants,
+    refetchInterval: POLL,
+  });
+}
+
+export function useRecentTransactions(limit = 10) {
+  return useQuery({
+    queryKey: dashboardKeys.recentTransactions(limit),
+    queryFn: () =>
+      api.get<{ transactions: RecentTransaction[] }>('/dashboard/recent-transactions', { limit }),
+    select: (res) => res.transactions,
     refetchInterval: POLL,
   });
 }

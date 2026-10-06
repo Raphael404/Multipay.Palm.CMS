@@ -1,24 +1,39 @@
 /**
- * API client.
- *
- * All feature hooks call `api.get/post/patch/delete` with real REST paths
- * (e.g. GET /merchants?page=1&status=active). While the backend does not
- * exist, `VITE_USE_MOCK` (default: true) routes every call to the local
- * mock resolver which serves the JSON files in src/mocks/data/.
- *
- * To switch to the real backend:
- *   1. Set VITE_USE_MOCK=false in .env
- *   2. Set VITE_API_BASE_URL=https://your-backend/api
- * Nothing else changes — UI code is unaware of the data source.
+ * Admin API client. Every path is relative to VITE_API_BASE_URL
+ * (default `/api/v1/admin`), e.g. `api.get('/merchants', { page: 1 })`.
+ * Sends the session token as `Authorization: Bearer`, and on 401 clears the
+ * session and returns to the login page.
  */
 
-export const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
-export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? '/api';
+export const API_BASE_URL: string = (
+  import.meta.env.VITE_API_BASE_URL ?? '/api/v1/admin'
+).replace(/\/$/, '');
 
-export type QueryParams = Record<
-  string,
-  string | number | boolean | string[] | undefined | null
->;
+export const TOKEN_KEY = 'palmpay.token';
+
+/** Page size used by every paginated table. */
+export const DEFAULT_PAGE_SIZE = 20;
+
+export type QueryParams = Record<string, string | number | boolean | undefined | null>;
+
+/** Standard paginated list returned by the backend. */
+export interface Paginated<T> {
+  items: T[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+/** RFC 7807 problem details returned on errors. */
+interface ProblemDetails {
+  title?: string | null;
+  detail?: string | null;
+  status?: number | null;
+  errors?: Record<string, string[]>;
+}
 
 export class ApiError extends Error {
   constructor(
@@ -31,31 +46,52 @@ export class ApiError extends Error {
   }
 }
 
+/** Human-readable message for any thrown error (prefers the backend's ProblemDetails). */
+export function errorMessage(err: unknown, fallback = 'Something went wrong'): string {
+  if (err instanceof ApiError) {
+    const body = err.body as ProblemDetails | undefined;
+    const validation = body?.errors ? Object.values(body.errors).flat()[0] : undefined;
+    // The backend puts the human message in `title`; `detail` is often a generic
+    // "Exception of type '…' was thrown".
+    const detail = body?.detail?.startsWith('Exception of type') ? undefined : body?.detail;
+    return validation || body?.title || detail || fallback;
+  }
+  return fallback;
+}
+
+let unauthorizedHandler: (() => void) | undefined;
+/** Registers the 401 handler; returns an unsubscribe function. */
+export function onUnauthorized(handler: () => void): () => void {
+  unauthorizedHandler = handler;
+  return () => {
+    if (unauthorizedHandler === handler) unauthorizedHandler = undefined;
+  };
+}
+
 function buildUrl(path: string, params?: QueryParams): string {
   const url = new URL(API_BASE_URL + path, window.location.origin);
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value === undefined || value === null || value === '') continue;
-      if (Array.isArray(value)) {
-        for (const v of value) url.searchParams.append(key, v);
-      } else {
-        url.searchParams.set(key, String(value));
-      }
+      url.searchParams.set(key, String(value));
     }
   }
   return url.toString();
 }
 
-async function realRequest<T>(
-  method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE',
+type Method = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+
+async function send(
+  method: Method,
   path: string,
   opts: { params?: QueryParams; body?: unknown } = {},
-): Promise<T> {
-  const token = localStorage.getItem('palmpay.token');
+): Promise<Response> {
+  const token = localStorage.getItem(TOKEN_KEY);
   const res = await fetch(buildUrl(path, opts.params), {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      ...(opts.body !== undefined ? { 'Content-Type': 'application/json' } : {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
@@ -67,29 +103,51 @@ async function realRequest<T>(
     } catch {
       body = undefined;
     }
+    if (res.status === 401 && token) unauthorizedHandler?.();
     throw new ApiError(res.status, `${method} ${path} failed (${res.status})`, body);
   }
-  if (res.status === 204) return undefined as T;
-  return (await res.json()) as T;
+  return res;
 }
 
 async function request<T>(
-  method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE',
+  method: Method,
   path: string,
   opts: { params?: QueryParams; body?: unknown } = {},
 ): Promise<T> {
-  if (USE_MOCK) {
-    const { mockRequest } = await import('@/mocks/resolver');
-    return mockRequest<T>(method, path, opts);
-  }
-  return realRequest<T>(method, path, opts);
+  const res = await send(method, path, opts);
+  const text = await res.text();
+  return (text ? JSON.parse(text) : undefined) as T;
+}
+
+/** Fetches a file response and triggers a browser download. */
+async function download(
+  method: Method,
+  path: string,
+  opts: { params?: QueryParams; body?: unknown; fallbackName: string },
+): Promise<void> {
+  const res = await send(method, path, opts);
+  const disposition = res.headers.get('Content-Disposition') ?? '';
+  const match =
+    /filename\*=UTF-8''([^;]+)/i.exec(disposition) ?? /filename="?([^";]+)"?/i.exec(disposition);
+  const fileName = match ? decodeURIComponent(match[1]) : opts.fallbackName;
+  const url = URL.createObjectURL(await res.blob());
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 export const api = {
   get: <T>(path: string, params?: QueryParams) => request<T>('GET', path, { params }),
-  post: <T>(path: string, body?: unknown, params?: QueryParams) =>
-    request<T>('POST', path, { body, params }),
-  patch: <T>(path: string, body?: unknown) => request<T>('PATCH', path, { body }),
+  post: <T>(path: string, body?: unknown) => request<T>('POST', path, { body }),
   put: <T>(path: string, body?: unknown) => request<T>('PUT', path, { body }),
-  delete: <T>(path: string) => request<T>('DELETE', path),
+  patch: <T>(path: string, body?: unknown) => request<T>('PATCH', path, { body }),
+  delete: <T>(path: string, body?: unknown) => request<T>('DELETE', path, { body }),
+  download: (
+    method: 'GET' | 'POST',
+    path: string,
+    opts: { body?: unknown; params?: QueryParams; fallbackName: string },
+  ) => download(method, path, opts),
 };
+

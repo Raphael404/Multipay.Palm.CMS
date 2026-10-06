@@ -10,6 +10,8 @@ interface StatCardProps {
   deltaTone?: 'positive' | 'negative' | 'neutral';
   icon?: ReactNode;
   loading?: boolean;
+  /** `sm` for secondary KPI rows. */
+  size?: 'default' | 'sm';
   className?: string;
 }
 
@@ -20,22 +22,33 @@ export function StatCard({
   deltaTone = 'neutral',
   icon,
   loading,
+  size = 'default',
   className,
 }: StatCardProps) {
+  const sm = size === 'sm';
   return (
-    <Card className={cn('gap-2 rounded-2xl p-5', className)}>
+    <Card className={cn('rounded-2xl', sm ? 'gap-1 p-4' : 'gap-2 p-5', className)}>
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-muted-foreground">{label}</p>
+        <p className={cn('font-medium text-muted-foreground', sm ? 'text-xs' : 'text-sm')}>
+          {label}
+        </p>
         {icon && <span className="text-muted-foreground/70">{icon}</span>}
       </div>
       {loading ? (
         <>
-          <Skeleton className="h-9 w-28" />
-          <Skeleton className="h-4 w-20" />
+          <Skeleton className={sm ? 'h-7 w-20' : 'h-9 w-28'} />
+          {!sm && <Skeleton className="h-4 w-20" />}
         </>
       ) : (
         <>
-          <p className="text-3xl font-bold tracking-tight text-foreground xl:text-4xl">{value}</p>
+          <p
+            className={cn(
+              'font-bold tracking-tight text-foreground',
+              sm ? 'text-xl' : 'text-3xl xl:text-4xl',
+            )}
+          >
+            {value}
+          </p>
           {delta != null && (
             <p
               className={cn(

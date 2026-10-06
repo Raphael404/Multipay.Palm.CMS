@@ -3,36 +3,31 @@ import { cn } from '@/lib/utils';
 type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'muted';
 
 const TONE_BY_STATUS: Record<string, Tone> = {
-  // terminals
-  online: 'success',
-  offline: 'destructive',
-  maintenance: 'warning',
-  decommissioned: 'muted',
-  // merchants
-  active: 'success',
-  suspended: 'destructive',
-  pending_kyc: 'warning',
-  closed: 'muted',
-  // transactions
-  success: 'success',
-  failed: 'destructive',
-  pending: 'warning',
-  refunded: 'info',
-  // settlement
-  settled: 'success',
-  delayed: 'warning',
-  on_hold: 'destructive',
+  // merchants / terminals
+  Active: 'success',
+  Inactive: 'muted',
+  Deactivated: 'muted',
+  Cancelled: 'destructive',
+  Suspended: 'warning',
+  Registered: 'info',
+  Provisioned: 'info',
+  // payments
+  Completed: 'success',
+  Authorized: 'success',
+  Matched: 'info',
+  Pending: 'warning',
+  Failed: 'destructive',
+  RefundedByCustomer: 'info',
+  RefundedBySystem: 'info',
+  RefundInitiated: 'info',
+  Refunded: 'info',
+  // devices
+  InStock: 'info',
+  Assigned: 'success',
+  InRepair: 'warning',
+  Retired: 'muted',
   // users
-  disabled: 'muted',
-  // alerts
-  critical: 'destructive',
-  warning: 'warning',
-  info: 'info',
-  ok: 'success',
-  // logs
-  error: 'destructive',
-  warn: 'warning',
-  debug: 'muted',
+  Disabled: 'muted',
 };
 
 const TONE_CLASSES: Record<Tone, string> = {
@@ -51,11 +46,17 @@ const DOT_CLASSES: Record<Tone, string> = {
   muted: 'bg-muted-foreground',
 };
 
-export function statusLabel(status: string): string {
+/**
+ * "RefundedByCustomer" → "Refunded By Customer". Tolerates values outside the
+ * documented enum (the API has returned raw numbers and null for some fields).
+ */
+export function statusLabel(status: unknown): string {
+  if (status === null || status === undefined || status === '') return '—';
+  if (typeof status !== 'string') return `Unknown (${String(status)})`;
   return status
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
+    .replace(/_/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export function StatusText({
@@ -63,11 +64,11 @@ export function StatusText({
   withDot = false,
   className,
 }: {
-  status: string;
+  status: unknown;
   withDot?: boolean;
   className?: string;
 }) {
-  const tone = TONE_BY_STATUS[status] ?? 'muted';
+  const tone = (typeof status === 'string' && TONE_BY_STATUS[status]) || 'muted';
   return (
     <span
       className={cn('inline-flex items-center gap-1.5 text-sm font-medium', TONE_CLASSES[tone], className)}

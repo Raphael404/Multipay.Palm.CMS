@@ -1,10 +1,7 @@
-import { useState } from 'react';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { z } from 'zod';
-import { endOfDay, format, startOfDay } from 'date-fns';
-import type { DateRange } from 'react-day-picker';
-import { CalendarRange, Download, X } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { PAYMENT_STATUSES, type TransactionListItem } from '@/types';
 import {
   useExportTransactions,
@@ -16,10 +13,8 @@ import { useMerchantOptions } from '@/features/merchants/api';
 import { useTerminals } from '@/features/terminals/api';
 import { DEFAULT_PAGE_SIZE } from '@/lib/api-client';
 import { formatDateTime, formatMoney } from '@/lib/format';
-import { listSearchParams, optionalParam } from '@/lib/search-params';
+import { isoDateParam, listSearchParams, optionalParam } from '@/lib/search-params';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Sheet,
   SheetContent,
@@ -35,6 +30,8 @@ import { ErrorState } from '@/components/shared/ErrorState';
 import { SectionCard } from '@/components/shared/SectionCard';
 import { SearchInput } from '@/components/shared/SearchInput';
 import { OptionSelect, enumOptions } from '@/components/shared/OptionSelect';
+import { SearchableSelect } from '@/components/shared/SearchableSelect';
+import { DateRangeFilter } from '@/components/shared/DateRangeFilter';
 import { LoadingButton } from '@/components/shared/LoadingButton';
 import { DetailList, DetailRow } from '@/components/shared/DetailList';
 import { col } from '@/components/shared/columns';
@@ -43,8 +40,8 @@ const STATUS_OPTIONS = enumOptions(PAYMENT_STATUSES);
 
 const searchSchema = z.object({
   ...listSearchParams,
-  dateFrom: optionalParam(z.string()),
-  dateTo: optionalParam(z.string()),
+  dateFrom: isoDateParam,
+  dateTo: isoDateParam,
   status: optionalParam(z.enum(PAYMENT_STATUSES)),
   merchantId: optionalParam(z.string()),
   terminalId: optionalParam(z.string()),
@@ -125,14 +122,16 @@ function TransactionsPage() {
             options={STATUS_OPTIONS}
             allLabel="All statuses"
           />
-          <OptionSelect
+          <SearchableSelect
             value={filters.merchantId}
             onChange={(merchantId) => patchSearch({ merchantId, terminalId: undefined })}
             options={(merchants.data ?? []).map((m) => ({ value: m.id, label: m.name }))}
             allLabel="All merchants"
             className="w-52"
+            loading={merchants.isPending}
+            searchPlaceholder="Search merchants..."
           />
-          <OptionSelect
+          <SearchableSelect
             value={filters.terminalId}
             onChange={(terminalId) => patchSearch({ terminalId })}
             options={(terminals.data?.items ?? []).map((t) => ({
@@ -140,6 +139,8 @@ function TransactionsPage() {
               label: t.referenceId ?? t.id,
             }))}
             allLabel="All terminals"
+            loading={terminals.isPending}
+            searchPlaceholder="Search terminals..."
           />
           {hasFilters && (
             <Button
@@ -174,58 +175,6 @@ function TransactionsPage() {
         onClose={() => void navigate({ search: (prev) => ({ ...prev, tx: undefined }) })}
       />
     </>
-  );
-}
-
-function DateRangeFilter({
-  from,
-  to,
-  onChange,
-}: {
-  from?: string;
-  to?: string;
-  onChange: (from?: string, to?: string) => void;
-}) {
-  const [draft, setDraft] = useState<DateRange | undefined>();
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">
-          <CalendarRange className="size-4" />
-          {from && to
-            ? `${format(new Date(from), 'dd MMM')} – ${format(new Date(to), 'dd MMM')}`
-            : 'Date range'}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-0">
-        <Calendar
-          mode="range"
-          numberOfMonths={2}
-          selected={draft}
-          onSelect={(range) => {
-            setDraft(range);
-            if (range?.from && range?.to) {
-              onChange(startOfDay(range.from).toISOString(), endOfDay(range.to).toISOString());
-            }
-          }}
-        />
-        {(from || draft) && (
-          <div className="border-t border-border p-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full"
-              onClick={() => {
-                setDraft(undefined);
-                onChange(undefined, undefined);
-              }}
-            >
-              Clear range
-            </Button>
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
   );
 }
 

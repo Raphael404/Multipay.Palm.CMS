@@ -2,7 +2,9 @@ import { Link, useRouterState } from '@tanstack/react-router';
 import {
   BarChart3,
   CreditCard,
+  Cpu,
   FileText,
+  History,
   LayoutDashboard,
   ShieldAlert,
   Store,
@@ -34,6 +36,7 @@ const NAV_SECTIONS: {
       { to: '/', label: 'Dashboard', icon: LayoutDashboard },
       { to: '/merchants', label: 'Merchants', icon: Store },
       { to: '/terminals', label: 'Palm Terminals', icon: TabletSmartphone },
+      { to: '/devices', label: 'Devices', icon: Cpu },
       { to: '/transactions', label: 'Transactions', icon: CreditCard },
       { to: '/failed-transactions', label: 'Failed Monitoring', icon: ShieldAlert },
     ],
@@ -47,7 +50,10 @@ const NAV_SECTIONS: {
   },
   {
     label: 'Administration',
-    items: [{ to: '/users', label: 'Users & Roles', icon: Users, permission: 'users.read' }],
+    items: [
+      { to: '/users', label: 'Users & Roles', icon: Users, permission: 'users.read' },
+      { to: '/audit-logs', label: 'Audit Log', icon: History, permission: 'audit.read' },
+    ],
   },
 ];
 

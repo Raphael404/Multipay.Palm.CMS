@@ -31,18 +31,22 @@ import { OptionSelect } from '@/components/shared/OptionSelect';
 import { Can } from '@/components/shared/Can';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { col } from '@/components/shared/columns';
+import { EntityHistory } from '@/features/audit-logs/components/EntityHistory';
+import { useAuthStore } from '@/stores/auth.store';
 import { AreaVolumeChart } from '@/components/charts/AreaVolumeChart';
 
 export const Route = createFileRoute('/_app/merchants/$merchantId')({
   component: MerchantDetailPage,
 });
 
-const TABS = ['overview', 'terminals', 'turnover', 'transactions'] as const;
+const TABS = ['overview', 'terminals', 'turnover', 'transactions', 'history'] as const;
 
 function MerchantDetailPage() {
   const { merchantId } = Route.useParams();
   const query = useMerchant(merchantId);
   const [editOpen, setEditOpen] = useState(false);
+  const canReadAudit = useAuthStore((s) => s.can('audit.read'));
+  const tabs = TABS.filter((tab) => tab !== 'history' || canReadAudit);
 
   if (query.isError) {
     return <ErrorState message="Merchant not found." onRetry={() => void query.refetch()} />;
@@ -75,7 +79,7 @@ function MerchantDetailPage() {
 
       <Tabs defaultValue="overview" className="gap-6">
         <TabsList className="rounded-xl">
-          {TABS.map((tab) => (
+          {tabs.map((tab) => (
             <TabsTrigger key={tab} value={tab} className="rounded-lg capitalize">
               {tab}
             </TabsTrigger>
@@ -93,6 +97,9 @@ function MerchantDetailPage() {
         </TabsContent>
         <TabsContent value="transactions">
           <TransactionsTab merchantId={merchantId} />
+        </TabsContent>
+        <TabsContent value="history">
+          <EntityHistory entityType="Merchant" entityId={merchantId} />
         </TabsContent>
       </Tabs>
 

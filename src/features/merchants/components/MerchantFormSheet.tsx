@@ -59,9 +59,11 @@ export function MerchantFormSheet({
     defaultValues: toFormValues(merchant),
   });
 
+  // Reset only when the sheet opens, so a background refetch doesn't wipe edits.
   useEffect(() => {
     if (open) form.reset(toFormValues(merchant));
-  }, [open, merchant, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const onSubmit = form.handleSubmit((v) => {
     // Optional fields are sent as null when left empty.

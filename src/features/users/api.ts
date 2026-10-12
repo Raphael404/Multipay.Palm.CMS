@@ -24,6 +24,20 @@ export function useUsers(filters: UserFilters) {
   });
 }
 
+/** Users for pickers (e.g. the audit-log actor filter). */
+export function useUserOptions(enabled = true) {
+  return useQuery({
+    queryKey: [...userKeys.all, 'options'] as const,
+    queryFn: () => api.get<{ users: Paginated<AdminUser> }>('/users', { page: 1, pageSize: 200 }),
+    select: (res) =>
+      res.users.items.map((u) => {
+        const name = [u.firstName, u.lastName].filter(Boolean).join(' ');
+        return { value: u.id, label: [name, u.email].filter(Boolean).join(' · ') || u.id };
+      }),
+    enabled,
+  });
+}
+
 export function useInviteUser() {
   return useApiMutation({
     mutationFn: (input: InviteUserInput) =>

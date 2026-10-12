@@ -16,11 +16,14 @@ import { Route as AppUsersRouteImport } from './routes/_app/users'
 import { Route as AppTransactionsRouteImport } from './routes/_app/transactions'
 import { Route as AppReportsRouteImport } from './routes/_app/reports'
 import { Route as AppFailedTransactionsRouteImport } from './routes/_app/failed-transactions'
+import { Route as AppAuditLogsRouteImport } from './routes/_app/audit-logs'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
 import { Route as AppTerminalsIndexRouteImport } from './routes/_app/terminals/index'
 import { Route as AppMerchantsIndexRouteImport } from './routes/_app/merchants/index'
+import { Route as AppDevicesIndexRouteImport } from './routes/_app/devices/index'
 import { Route as AppTerminalsTerminalIdRouteImport } from './routes/_app/terminals/$terminalId'
 import { Route as AppMerchantsMerchantIdRouteImport } from './routes/_app/merchants/$merchantId'
+import { Route as AppDevicesDeviceIdRouteImport } from './routes/_app/devices/$deviceId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -56,6 +59,11 @@ const AppFailedTransactionsRoute = AppFailedTransactionsRouteImport.update({
   path: '/failed-transactions',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAuditLogsRoute = AppAuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -71,6 +79,11 @@ const AppMerchantsIndexRoute = AppMerchantsIndexRouteImport.update({
   path: '/merchants/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDevicesIndexRoute = AppDevicesIndexRouteImport.update({
+  id: '/devices/',
+  path: '/devices/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppTerminalsTerminalIdRoute = AppTerminalsTerminalIdRouteImport.update({
   id: '/terminals/$terminalId',
   path: '/terminals/$terminalId',
@@ -81,30 +94,41 @@ const AppMerchantsMerchantIdRoute = AppMerchantsMerchantIdRouteImport.update({
   path: '/merchants/$merchantId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDevicesDeviceIdRoute = AppDevicesDeviceIdRouteImport.update({
+  id: '/devices/$deviceId',
+  path: '/devices/$deviceId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/analytics': typeof AppAnalyticsRoute
+  '/audit-logs': typeof AppAuditLogsRoute
   '/failed-transactions': typeof AppFailedTransactionsRoute
   '/reports': typeof AppReportsRoute
   '/transactions': typeof AppTransactionsRoute
   '/users': typeof AppUsersRoute
+  '/devices/$deviceId': typeof AppDevicesDeviceIdRoute
   '/merchants/$merchantId': typeof AppMerchantsMerchantIdRoute
   '/terminals/$terminalId': typeof AppTerminalsTerminalIdRoute
+  '/devices/': typeof AppDevicesIndexRoute
   '/merchants/': typeof AppMerchantsIndexRoute
   '/terminals/': typeof AppTerminalsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/analytics': typeof AppAnalyticsRoute
+  '/audit-logs': typeof AppAuditLogsRoute
   '/failed-transactions': typeof AppFailedTransactionsRoute
   '/reports': typeof AppReportsRoute
   '/transactions': typeof AppTransactionsRoute
   '/users': typeof AppUsersRoute
   '/': typeof AppIndexRoute
+  '/devices/$deviceId': typeof AppDevicesDeviceIdRoute
   '/merchants/$merchantId': typeof AppMerchantsMerchantIdRoute
   '/terminals/$terminalId': typeof AppTerminalsTerminalIdRoute
+  '/devices': typeof AppDevicesIndexRoute
   '/merchants': typeof AppMerchantsIndexRoute
   '/terminals': typeof AppTerminalsIndexRoute
 }
@@ -113,13 +137,16 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/_app/analytics': typeof AppAnalyticsRoute
+  '/_app/audit-logs': typeof AppAuditLogsRoute
   '/_app/failed-transactions': typeof AppFailedTransactionsRoute
   '/_app/reports': typeof AppReportsRoute
   '/_app/transactions': typeof AppTransactionsRoute
   '/_app/users': typeof AppUsersRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/devices/$deviceId': typeof AppDevicesDeviceIdRoute
   '/_app/merchants/$merchantId': typeof AppMerchantsMerchantIdRoute
   '/_app/terminals/$terminalId': typeof AppTerminalsTerminalIdRoute
+  '/_app/devices/': typeof AppDevicesIndexRoute
   '/_app/merchants/': typeof AppMerchantsIndexRoute
   '/_app/terminals/': typeof AppTerminalsIndexRoute
 }
@@ -129,25 +156,31 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/analytics'
+    | '/audit-logs'
     | '/failed-transactions'
     | '/reports'
     | '/transactions'
     | '/users'
+    | '/devices/$deviceId'
     | '/merchants/$merchantId'
     | '/terminals/$terminalId'
+    | '/devices/'
     | '/merchants/'
     | '/terminals/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/analytics'
+    | '/audit-logs'
     | '/failed-transactions'
     | '/reports'
     | '/transactions'
     | '/users'
     | '/'
+    | '/devices/$deviceId'
     | '/merchants/$merchantId'
     | '/terminals/$terminalId'
+    | '/devices'
     | '/merchants'
     | '/terminals'
   id:
@@ -155,13 +188,16 @@ export interface FileRouteTypes {
     | '/_app'
     | '/login'
     | '/_app/analytics'
+    | '/_app/audit-logs'
     | '/_app/failed-transactions'
     | '/_app/reports'
     | '/_app/transactions'
     | '/_app/users'
     | '/_app/'
+    | '/_app/devices/$deviceId'
     | '/_app/merchants/$merchantId'
     | '/_app/terminals/$terminalId'
+    | '/_app/devices/'
     | '/_app/merchants/'
     | '/_app/terminals/'
   fileRoutesById: FileRoutesById
@@ -222,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFailedTransactionsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/audit-logs': {
+      id: '/_app/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AppAuditLogsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/analytics': {
       id: '/_app/analytics'
       path: '/analytics'
@@ -243,6 +286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMerchantsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/devices/': {
+      id: '/_app/devices/'
+      path: '/devices'
+      fullPath: '/devices/'
+      preLoaderRoute: typeof AppDevicesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/terminals/$terminalId': {
       id: '/_app/terminals/$terminalId'
       path: '/terminals/$terminalId'
@@ -257,31 +307,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMerchantsMerchantIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/devices/$deviceId': {
+      id: '/_app/devices/$deviceId'
+      path: '/devices/$deviceId'
+      fullPath: '/devices/$deviceId'
+      preLoaderRoute: typeof AppDevicesDeviceIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
+  AppAuditLogsRoute: typeof AppAuditLogsRoute
   AppFailedTransactionsRoute: typeof AppFailedTransactionsRoute
   AppReportsRoute: typeof AppReportsRoute
   AppTransactionsRoute: typeof AppTransactionsRoute
   AppUsersRoute: typeof AppUsersRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppDevicesDeviceIdRoute: typeof AppDevicesDeviceIdRoute
   AppMerchantsMerchantIdRoute: typeof AppMerchantsMerchantIdRoute
   AppTerminalsTerminalIdRoute: typeof AppTerminalsTerminalIdRoute
+  AppDevicesIndexRoute: typeof AppDevicesIndexRoute
   AppMerchantsIndexRoute: typeof AppMerchantsIndexRoute
   AppTerminalsIndexRoute: typeof AppTerminalsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAnalyticsRoute: AppAnalyticsRoute,
+  AppAuditLogsRoute: AppAuditLogsRoute,
   AppFailedTransactionsRoute: AppFailedTransactionsRoute,
   AppReportsRoute: AppReportsRoute,
   AppTransactionsRoute: AppTransactionsRoute,
   AppUsersRoute: AppUsersRoute,
   AppIndexRoute: AppIndexRoute,
+  AppDevicesDeviceIdRoute: AppDevicesDeviceIdRoute,
   AppMerchantsMerchantIdRoute: AppMerchantsMerchantIdRoute,
   AppTerminalsTerminalIdRoute: AppTerminalsTerminalIdRoute,
+  AppDevicesIndexRoute: AppDevicesIndexRoute,
   AppMerchantsIndexRoute: AppMerchantsIndexRoute,
   AppTerminalsIndexRoute: AppTerminalsIndexRoute,
 }

@@ -21,9 +21,11 @@ export const TERMINAL_STATUSES = [
 export type TerminalStatus = (typeof TERMINAL_STATUSES)[number];
 
 export type TerminalType = 'POS' | 'PalmScanner' | 'Kiosk';
-export type DeviceType = 'Standalone' | 'Integrated';
+export const DEVICE_TYPES = ['Standalone', 'Integrated'] as const;
+export type DeviceType = (typeof DEVICE_TYPES)[number];
 
-export type DeviceStatus = 'InStock' | 'Assigned' | 'InRepair' | 'Retired';
+export const DEVICE_STATUSES = ['InStock', 'Assigned', 'InRepair', 'Retired'] as const;
+export type DeviceStatus = (typeof DEVICE_STATUSES)[number];
 
 export const PAYMENT_STATUSES = [
   'Pending',
@@ -244,6 +246,31 @@ export interface Device {
   notes: string | null;
   registeredAt: string;
   updatedAt: string | null;
+  currentPlacement: DevicePlacement | null;
+}
+
+/** Where a device is currently installed. */
+export interface DevicePlacement {
+  assignmentId: string;
+  terminalId: string;
+  terminalReferenceId: string | null;
+  terminalStatus: TerminalStatus;
+  merchantId: string | null;
+  merchantName: string | null;
+  assignedAt: string;
+}
+
+export interface DeviceDetail {
+  device: Device;
+  assignmentHistory: DeviceAssignment[] | null;
+}
+
+export interface DeviceInput {
+  palmModuleSerialNumber: string | null;
+  posUnitSerialNumber: string | null;
+  type: DeviceType;
+  model: string | null;
+  notes: string | null;
 }
 
 // ── Transactions ────────────────────────────────────────────────────────────
@@ -417,4 +444,33 @@ export interface InviteUserInput {
   lastName: string;
   password: string;
   role: Role;
+}
+
+// ── Audit logs ──────────────────────────────────────────────────────────────
+export const AUDIT_ACTIONS = ['Created', 'Updated', 'Deleted'] as const;
+export type AuditAction = (typeof AUDIT_ACTIONS)[number];
+
+export const AUDIT_ENTITY_TYPES = [
+  'Merchant',
+  'Terminal',
+  'Device',
+  'DeviceAssignment',
+  'User',
+] as const;
+export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];
+
+/** One changed field; rows from a single save share `correlationId`. */
+export interface AuditLogEntry {
+  id: string;
+  correlationId: string;
+  changedAt: string;
+  actorUserId: string;
+  actorEmail: string | null;
+  action: AuditAction;
+  entityType: AuditEntityType;
+  entityId: string;
+  field: string;
+  oldValue: string | null;
+  newValue: string | null;
+  ipAddress: string | null;
 }

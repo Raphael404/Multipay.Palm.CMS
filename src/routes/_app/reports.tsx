@@ -19,7 +19,7 @@ import { ErrorState } from '@/components/shared/ErrorState';
 import { SectionCard } from '@/components/shared/SectionCard';
 import { DataTable } from '@/components/shared/DataTable';
 import { LoadingButton } from '@/components/shared/LoadingButton';
-import { OptionSelect } from '@/components/shared/OptionSelect';
+import { SearchableSelect } from '@/components/shared/SearchableSelect';
 import { col } from '@/components/shared/columns';
 import {
   PeriodPicker,
@@ -140,7 +140,7 @@ function ReportsPage() {
                 resetResults();
               }}
             />
-            <OptionSelect
+            <SearchableSelect
               value={merchantId}
               onChange={(v) => {
                 setMerchantId(v);
@@ -149,6 +149,8 @@ function ReportsPage() {
               options={merchantOptions}
               allLabel="All merchants"
               className="w-56"
+              loading={merchants.isPending}
+              searchPlaceholder="Search merchants..."
             />
           </div>
           <div className="flex items-center gap-2">

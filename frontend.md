@@ -55,6 +55,23 @@ body: `{ email, password }` → `{ token, email, role }`
 სია პირდაპირ `{ items, ... }`ა.  
 `status`: `Active` | `Inactive` | `Deactivated` | `Suspended` | `Registered` | `Provisioned`
 
+Activate: მხოლოდ `Provisioned` + მოწყობილობა მიბმულია + მერჩანტი `Active`. Resume: `Suspended` + მოწყობილობა. Suspend: `Active`.  
+შეცდომა `application/problem+json`, გამოიყენე `code` (მაგ. `TERMINAL_INVALID_STATE`), არა ტექსტი.
+
+## Devices — `/devices`
+
+| UI | Endpoint |
+|---|---|
+| ცხრილი, სტატუსი, ტიპი | `GET /devices?status=&type=` |
+| დეტალი + მიბმის ისტორია | `GET /devices/{id}` |
+| რეგისტრაცია | `POST /devices` |
+| რედაქტირება | `PUT /devices/{id}` |
+| სტატუსის შეცვლა | `PUT /devices/{id}/status` |
+
+სია მასივია, არა გვერდი. ძებნა და გვერდები კლიენტზეა.  
+`status`: `InStock` | `Assigned` | `InRepair` | `Retired` (`Assigned` მხოლოდ ტერმინალზე მიბმით)  
+`type`: `Standalone` | `Integrated`
+
 ## Transactions — `/transactions`
 
 | UI | Endpoint |
@@ -119,3 +136,15 @@ Invite body: `{ email, phoneNumber, firstName, lastName, password, role }`
 Invite, role და status მხოლოდ `SuperAdmin`-ს შეუძლია. სია — `SuperAdmin` და `Admin`.
 
 ---
+
+## Audit Log — `/audit-logs`
+
+| UI | Endpoint |
+|---|---|
+| ცხრილი, ფილტრები, გვერდები | `GET /audit-logs?actorUserId=&action=&entityType=&entityId=&dateFrom=&dateTo=&page=1&pageSize=20` |
+| ტერმინალის / მოწყობილობის / მერჩანტის History | `GET /audit-logs?entityType=Terminal&entityId={id}` (Device, Merchant ანალოგიურად) |
+
+როლები: `SuperAdmin`, `Admin`. სია პირდაპირ `{ items, ... }`ა, `pageSize` მაქს. 100.  
+ერთი სტრიქონი = ერთი შეცვლილი ველი; ერთი შენახვის სტრიქონებს საერთო `correlationId` აქვთ.  
+`action`: `Created` | `Updated` | `Deleted`  
+`entityType`: `Merchant` | `Terminal` | `Device` | `DeviceAssignment` | `User`

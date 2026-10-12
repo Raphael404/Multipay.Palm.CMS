@@ -33,7 +33,22 @@ interface ProblemDetails {
   detail?: string | null;
   status?: number | null;
   errors?: Record<string, string[]>;
+  /** Stable machine-readable error code; prefer it over the message text. */
+  code?: string | null;
 }
+
+/** UI messages for the backend's error codes. */
+const ERROR_CODE_MESSAGES: Record<string, string> = {
+  OBJECT_NOT_FOUND: 'Terminal or device was not found',
+  TERMINAL_CLOSED: 'Cannot assign a device to a deactivated or inactive terminal',
+  TERMINAL_HAS_DEVICE: 'This terminal already has a device',
+  DEVICE_NOT_IN_STOCK: 'The device is not in stock',
+  DEVICE_ASSIGNED: 'The device is assigned to another terminal',
+  TERMINAL_INVALID_STATE: 'The terminal status does not allow this action',
+  TERMINAL_HAS_NO_DEVICE: 'The terminal has no device assigned',
+  MERCHANT_NOT_ACTIVE: "The terminal's merchant is not active",
+  CLOSE_DAY_IN_PROGRESS: 'Cannot unassign while a close-day is in progress',
+};
 
 export class ApiError extends Error {
   constructor(
@@ -46,9 +61,17 @@ export class ApiError extends Error {
   }
 }
 
+/** The backend's error `code` (e.g. `TERMINAL_INVALID_STATE`), if any. */
+export function errorCode(err: unknown): string | undefined {
+  if (!(err instanceof ApiError)) return undefined;
+  return (err.body as ProblemDetails | undefined)?.code ?? undefined;
+}
+
 /** Human-readable message for any thrown error (prefers the backend's ProblemDetails). */
 export function errorMessage(err: unknown, fallback = 'Something went wrong'): string {
   if (err instanceof ApiError) {
+    const code = errorCode(err);
+    if (code && ERROR_CODE_MESSAGES[code]) return ERROR_CODE_MESSAGES[code];
     const body = err.body as ProblemDetails | undefined;
     const validation = body?.errors ? Object.values(body.errors).flat()[0] : undefined;
     // The backend puts the human message in `title`; `detail` is often a generic

@@ -28,6 +28,10 @@ const TONE_BY_STATUS: Record<string, Tone> = {
   Retired: 'muted',
   // users
   Disabled: 'muted',
+  // audit actions
+  Created: 'success',
+  Updated: 'info',
+  Deleted: 'destructive',
 };
 
 const TONE_CLASSES: Record<Tone, string> = {

@@ -11,6 +11,7 @@ import { SectionCard } from '@/components/shared/SectionCard';
 import { DataTable } from '@/components/shared/DataTable';
 import { SearchInput } from '@/components/shared/SearchInput';
 import { OptionSelect, enumOptions } from '@/components/shared/OptionSelect';
+import { SearchableSelect } from '@/components/shared/SearchableSelect';
 import { col } from '@/components/shared/columns';
 
 const searchSchema = z.object({
@@ -64,7 +65,7 @@ function TerminalsPage() {
       <SectionCard>
         <div className="flex flex-wrap items-center gap-3">
           <SearchInput
-            placeholder="Search reference, serial..."
+            placeholder="Search reference, merchant, palm serial..."
             value={search}
             onChange={(v) => setSearch({ search: v || undefined })}
           />
@@ -74,11 +75,13 @@ function TerminalsPage() {
             options={STATUS_OPTIONS}
             allLabel="All statuses"
           />
-          <OptionSelect
+          <SearchableSelect
             value={merchantId}
             onChange={(v) => setSearch({ merchantId: v })}
             options={(merchants.data ?? []).map((m) => ({ value: m.id, label: m.name }))}
             allLabel="All merchants"
+            loading={merchants.isPending}
+            searchPlaceholder="Search merchants..."
             className="w-56"
           />
         </div>

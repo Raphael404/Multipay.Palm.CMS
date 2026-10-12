@@ -31,6 +31,8 @@ interface DataTableProps<TData> {
     onPageChange: (page: number) => void;
   };
   onRowClick?: (row: TData) => void;
+  /** Extra classes per row (e.g. to band related rows together). */
+  rowClassName?: (row: TData, index: number) => string | undefined;
   emptyState?: { title: string; description?: string; action?: ReactNode };
 }
 
@@ -42,6 +44,7 @@ export function DataTable<TData>({
   onRetry,
   pagination,
   onRowClick,
+  rowClassName,
   emptyState,
 }: DataTableProps<TData>) {
   const table = useReactTable({
@@ -56,11 +59,21 @@ export function DataTable<TData>({
   if (error) return <ErrorState onRetry={onRetry} />;
 
   if (!loading && data.length === 0) {
+    // Past the last page (stale link, list shrank): offer a way back.
+    const outOfRange = pagination && pagination.page > 1;
     return (
       <EmptyState
-        title={emptyState?.title ?? 'No results'}
+        title={outOfRange ? 'No results on this page' : (emptyState?.title ?? 'No results')}
         description={emptyState?.description ?? 'Try adjusting your filters or search query.'}
-        action={emptyState?.action}
+        action={
+          outOfRange ? (
+            <Button variant="outline" size="sm" onClick={() => pagination.onPageChange(1)}>
+              Back to first page
+            </Button>
+          ) : (
+            emptyState?.action
+          )
+        }
       />
     );
   }
@@ -98,7 +111,11 @@ export function DataTable<TData>({
                   <TableRow
                     key={row.id}
                     onClick={onRowClick ? () => onRowClick(row.original) : undefined}
-                    className={cn('border-border', onRowClick && 'cursor-pointer')}
+                    className={cn(
+                      'border-border',
+                      onRowClick && 'cursor-pointer',
+                      rowClassName?.(row.original, row.index),
+                    )}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="whitespace-nowrap py-3.5">

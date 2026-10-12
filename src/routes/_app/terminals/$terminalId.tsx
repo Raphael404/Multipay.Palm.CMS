@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Link2, Pause, Play, Power, Unlink } from 'lucide-react';
 import type { DeviceAssignment, DeviceStatus, Terminal } from '@/types';
@@ -16,7 +16,6 @@ import { formatDate, formatDateTime } from '@/lib/format';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Textarea } from '@/components/ui/textarea';
 import { DetailHeader } from '@/components/shared/DetailHeader';
 import { DetailList, DetailRow } from '@/components/shared/DetailList';
 import { SectionCard } from '@/components/shared/SectionCard';
@@ -27,13 +26,20 @@ import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { FormField } from '@/components/shared/FormField';
 import { OptionSelect, enumOptions } from '@/components/shared/OptionSelect';
+import { SearchableSelect } from '@/components/shared/SearchableSelect';
+import { EntityHistory } from '@/features/audit-logs/components/EntityHistory';
+import { assignmentPeriodColumns } from '@/features/devices/components/assignment-columns';
+import { ReasonField, optionalReason } from '@/components/shared/ReasonField';
+import { EntityLink } from '@/components/shared/EntityLink';
 import { col } from '@/components/shared/columns';
 
 export const Route = createFileRoute('/_app/terminals/$terminalId')({
   component: TerminalDetailPage,
 });
 
-const ACTIVATABLE = new Set(['Registered', 'Provisioned', 'Inactive']);
+/** Mirrors the backend rules; it also rejects activation when the merchant isn't Active. */
+const canActivate = (t: Terminal) => t.status === 'Provisioned' && Boolean(t.currentDevice);
+const canResume = (t: Terminal) => t.status === 'Suspended' && Boolean(t.currentDevice);
 
 type DialogKind = 'activate' | 'suspend' | 'resume' | 'assign' | 'unassign' | null;
 
@@ -67,7 +73,7 @@ function TerminalDetailPage() {
             <>
               <StatusText status={t.status} withDot className="mr-2 text-base" />
               <Can permission="terminals.write">
-                {ACTIVATABLE.has(t.status) && (
+                {canActivate(t) && (
                   <Button variant="outline" onClick={() => setDialog('activate')}>
                     <Power className="size-4" /> Activate
                   </Button>
@@ -77,7 +83,7 @@ function TerminalDetailPage() {
                     <Pause className="size-4" /> Suspend
                   </Button>
                 )}
-                {t.status === 'Suspended' && (
+                {canResume(t) && (
                   <Button variant="outline" onClick={() => setDialog('resume')}>
                     <Play className="size-4" /> Resume
                   </Button>
@@ -94,13 +100,9 @@ function TerminalDetailPage() {
             <DetailList>
               <DetailRow label="Merchant">
                 {t.merchantId && (
-                  <Link
-                    to="/merchants/$merchantId"
-                    params={{ merchantId: t.merchantId }}
-                    className="text-info hover:underline"
-                  >
+                  <EntityLink type="Merchant" id={t.merchantId}>
                     {t.merchantName ?? t.merchantId}
-                  </Link>
+                  </EntityLink>
                 )}
               </DetailRow>
               <DetailRow label="Merchant external ID">{t.merchantExternalId}</DetailRow>
@@ -155,6 +157,8 @@ function TerminalDetailPage() {
         />
       </SectionCard>
 
+      <EntityHistory entityType="Terminal" entityId={terminalId} />
+
       {t && (
         <>
           <ActivateDialog open={dialog === 'activate'} onClose={close} terminal={t} />
@@ -168,39 +172,11 @@ function TerminalDetailPage() {
   );
 }
 
-/** Date with the optional reason underneath. */
-function DateWithReason({ at, reason }: { at: string | null; reason: string | null }) {
-  return (
-    <div>
-      <p>{at ? formatDateTime(at) : '—'}</p>
-      {reason && <p className="text-xs text-muted-foreground">{reason}</p>}
-    </div>
-  );
-}
-
 const historyColumns: ColumnDef<DeviceAssignment>[] = [
   col.text('palmModuleSerialNumber', 'Palm module', { strong: true }),
   col.text('posUnitSerialNumber', 'POS unit'),
-  {
-    accessorKey: 'assignedAt',
-    header: 'Assigned',
-    cell: ({ row }) => (
-      <DateWithReason at={row.original.assignedAt} reason={row.original.assignReason} />
-    ),
-  },
-  {
-    accessorKey: 'unassignedAt',
-    header: 'Unassigned',
-    cell: ({ row }) =>
-      row.original.isOpen ? (
-        <span className="text-success">Current</span>
-      ) : (
-        <DateWithReason at={row.original.unassignedAt} reason={row.original.unassignReason} />
-      ),
-  },
+  ...assignmentPeriodColumns,
 ];
-
-const optionalReason = (reason: string) => reason.trim() || undefined;
 
 function ActivateDialog({ open, onClose, terminal }: DialogProps) {
   const activate = useActivateTerminal(terminal.id);
@@ -229,14 +205,6 @@ function ResumeDialog({ open, onClose, terminal }: DialogProps) {
       pending={resume.isPending}
       onConfirm={() => resume.mutate(undefined, { onSuccess: onClose })}
     />
-  );
-}
-
-function ReasonField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  return (
-    <FormField label="Reason">
-      <Textarea value={value} onChange={(e) => onChange(e.target.value)} />
-    </FormField>
   );
 }
 
@@ -284,9 +252,13 @@ function AssignDialog({ open, onClose, terminal }: DialogProps) {
     onClose();
   };
 
+  // Every identifier is in the label so the search matches any of them.
   const deviceOptions = (devices.data ?? []).map((d) => ({
     value: d.id,
-    label: `${d.palmModuleSerialNumber ?? d.posUnitSerialNumber ?? d.id}${d.model ? ` · ${d.model}` : ''}`,
+    label:
+      [d.palmModuleSerialNumber, d.posUnitSerialNumber, d.model, statusLabel(d.type)]
+        .filter(Boolean)
+        .join(' · ') || d.id,
   }));
 
   return (
@@ -309,7 +281,7 @@ function AssignDialog({ open, onClose, terminal }: DialogProps) {
     >
       <div className="space-y-4">
         <FormField label="In-stock device">
-          <OptionSelect
+          <SearchableSelect
             value={deviceId}
             onChange={(v) => {
               setDeviceId(v);
@@ -317,7 +289,9 @@ function AssignDialog({ open, onClose, terminal }: DialogProps) {
             }}
             options={deviceOptions}
             allLabel="— Enter serial instead —"
-            placeholder={devices.isPending ? 'Loading…' : 'Select device'}
+            loading={devices.isPending}
+            searchPlaceholder="Search serial or model..."
+            emptyText="No in-stock devices"
             className="w-full"
           />
         </FormField>
